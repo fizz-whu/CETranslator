@@ -1,0 +1,24 @@
+# Xcode
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+*.xcworkspace
+DerivedData/
+CETranslator/Resources/
+Build/
+*.app
+
+# Swift Package Manager
+.build/
+
+# Carthage
+Carthage/Build/
+
+# CocoaPods
+Pods/
+*.xcconfig
+
+# Other common files
+.DS_Store
