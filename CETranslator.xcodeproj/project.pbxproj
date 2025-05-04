@@ -211,6 +211,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				ECA154612D98D05400B88136 /* XCRemoteSwiftPackageReference "LLM" */,
+				ECD158E02DC0718D00C4A396 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = ECA154322D97A09A00B88136 /* Products */;
@@ -585,6 +586,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.4.3;
+			};
+		};
+		ECD158E02DC0718D00C4A396 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/d-date/google-mlkit-swiftpm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
