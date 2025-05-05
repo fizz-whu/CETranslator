@@ -13,6 +13,20 @@ enum SupportedLanguage: String, CaseIterable, Identifiable {
 
     var id: String { self.rawValue }
 
+    // Add flag emoji property
+    var flagEmoji: String {
+        switch self {
+        case .chinese: return "🇨🇳"
+        case .english: return "🇺🇸" // Or 🇬🇧 for UK English
+        case .japanese: return "🇯🇵"
+        case .spanish: return "🇪🇸"
+        case .italian: return "🇮🇹"
+        case .korean: return "🇰🇷"
+        case .french: return "🇫🇷"
+        case .portuguese: return "🇵🇹" // Or 🇧🇷 for Brazilian Portuguese
+        }
+    }
+
     // Language code for Speech Recognition (SFSpeechRecognizer)
     var languageCode: String {
         switch self {
@@ -59,7 +73,8 @@ struct ContentView: View {
                 // Picker for Source Language
                 Picker("From:", selection: $sourceLanguage) {
                     ForEach(SupportedLanguage.allCases) { language in
-                        Text(language.rawValue).tag(language)
+                        // Display flag and name
+                        Text(language.flagEmoji + " " + language.rawValue).tag(language)
                     }
                 }
                 .pickerStyle(.menu) // Or .wheel, .segmented
@@ -78,7 +93,8 @@ struct ContentView: View {
                 // Picker for Target Language
                 Picker("To:", selection: $targetLanguage) {
                     ForEach(SupportedLanguage.allCases) { language in
-                        Text(language.rawValue).tag(language)
+                        // Display flag and name
+                        Text(language.flagEmoji + " " + language.rawValue).tag(language)
                     }
                 }
                 .pickerStyle(.menu)
@@ -86,8 +102,8 @@ struct ContentView: View {
 
                 Spacer() // Pushes the button to the bottom
 
-                // Navigation Button - conditionally enabled
-                Button("Start Translation") {
+                // Navigation Button - use a symbol instead of text
+                Button {
                     // Trigger navigation if languages are different
                     if sourceLanguage != targetLanguage {
                         navigateToTranslator = true
@@ -95,6 +111,11 @@ struct ContentView: View {
                         // Optionally show an alert if languages are the same
                         print("Cannot translate: Source and target languages are the same.")
                     }
+                } label: {
+                    // Use a play symbol
+                    Image(systemName: "play.circle.fill")
+                        .font(.largeTitle) // Make the symbol larger
+                        .foregroundStyle(.white) // Ensure visibility on prominent button
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(sourceLanguage == targetLanguage) // Disable if same language
