@@ -61,9 +61,9 @@ struct ChineseToEnglishView: View {
                     .onChanged { _ in
                         if !isRecording {
                             isRecording = true
-                            vm.recognizedText = "" // Clear previous Chinese text
-                            translatedText = ""   // Clear previous English text
-                            // Start recording in Chinese
+                            vm.recognizedText = "" // Clear previous text
+                            translatedText = ""    // Clear previous translation
+                            textToTranslate = ""   // Clear previous text to translate
                             vm.startRecording(sourceLanguage: "zh-Hans")
                         }
                     }
@@ -114,25 +114,14 @@ struct ChineseToEnglishView: View {
                 await MainActor.run {
                     translatedText = englishText // Update UI with English text
                     isTranslating = false
-                    print("💫 UI Updated with translation (English)")
+                    print("💫 UI Updated with translation")
                 }
 
-                // Speak the translated English text
-                speakText(englishText, language: "en-US") // Use English voice
+                // Speak the translated text
+                speakText(englishText, language: "en-US") // Changed from chineseText to englishText and language to en-US
 
-                // Clean up after delay
-                try? await Task.sleep(nanoseconds: 2_000_000_000)
-                await MainActor.run {
-                    if !textToTranslate.isEmpty {
-                        print("🧹 Cleanup running...")
-                        vm.recognizedText = ""
-                        translatedText = ""
-                        textToTranslate = ""
-                        print("🧹 Cleanup complete.")
-                    } else {
-                         print("🧹 Cleanup skipped: textToTranslate already cleared.")
-                    }
-                }
+                // Remove the cleanup code that was here
+                // This will keep the translation visible until next recording
             } catch {
                 print("🔴 Translation error: \(error.localizedDescription)")
                 await MainActor.run {

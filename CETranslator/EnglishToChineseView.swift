@@ -61,9 +61,10 @@ struct EnglishToChineseView: View {
                     .onChanged { _ in
                         if !isRecording {
                             isRecording = true
-                            vm.recognizedText = ""
-                            translatedText = ""
-                            vm.startRecording(sourceLanguage: "English")
+                            vm.recognizedText = "" // Clear previous text
+                            translatedText = ""    // Clear previous translation
+                            textToTranslate = ""   // Clear previous text to translate
+                            vm.startRecording(sourceLanguage: "en-US")
                         }
                     }
                     .onEnded { _ in
