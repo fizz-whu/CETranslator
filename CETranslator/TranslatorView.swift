@@ -34,6 +34,36 @@ struct TranslatorView: View {
     private var sourceLocaleId: String { sourceLanguage.translationLocaleIdentifier }
     private var targetLocaleId: String { targetLanguage.translationLocaleIdentifier }
 
+    // Computed property for the dynamic translation placeholder text
+    private var dynamicTranslationPlaceholder: String {
+        if sourceLanguage == .english {
+            return sourceLanguage.translationPlaceholderText // This line needs translationPlaceholderText to exist in SupportedLanguage
+        } else {
+            return "\(sourceLanguage.translationPlaceholderText) (Translation will appear here)" // Same here
+        }
+    }
+
+    // Computed property for the dynamic recognition placeholder text
+    private var dynamicRecognitionPlaceholder: String {
+        let activeLanguage = (currentMode == .sourceToTarget) ? sourceLanguage : targetLanguage
+        let activeLanguageName = (currentMode == .sourceToTarget) ? sourceName : targetName
+
+        // Get the localized format string from the active language
+        let localizedFormat = activeLanguage.tapAndHoldButtonPlaceholderFormat
+        // Create the localized placeholder by inserting the language name
+        let localizedPlaceholder = String(format: localizedFormat, activeLanguageName)
+
+        if activeLanguage == .english {
+            return localizedPlaceholder
+        } else {
+            // For the English fallback, get the English format string
+            let englishFormat = SupportedLanguage.english.tapAndHoldButtonPlaceholderFormat
+            // Create the English version of the placeholder by inserting the *active* language name
+            let englishFallbackText = String(format: englishFormat, activeLanguageName)
+            return "\(localizedPlaceholder) (\(englishFallbackText))"
+        }
+    }
+
     var body: some View {
         ZStack { // Added ZStack for background color
             facebookBackgroundGray.edgesIgnoringSafeArea(.all) // Facebook-style background
@@ -41,7 +71,7 @@ struct TranslatorView: View {
             VStack(spacing: 20) {
                 // Recognition result box - Dynamic placeholder
                 Text(vm.recognizedText.isEmpty ?
-                     (currentMode == .sourceToTarget ? "Tap & Hold \(sourceName) button..." : "Tap & Hold \(targetName) button...") :
+                     dynamicRecognitionPlaceholder : // Use the new computed property here
                      vm.recognizedText)
                     .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading) // Ensure minimum height
                     .padding()
@@ -57,7 +87,7 @@ struct TranslatorView: View {
                     .padding(.top, 10) // Adjusted padding
 
                 // Translation result box
-                Text(translatedText.isEmpty ? "Translation will appear here" : translatedText)
+                Text(translatedText.isEmpty ? dynamicTranslationPlaceholder : translatedText) // Use the new computed property
                     .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading) // Ensure minimum height
                     .padding()
                     .background(facebookCardBackground) // Facebook-style card background

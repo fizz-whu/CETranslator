@@ -1,7 +1,7 @@
 import SwiftUI
 
 // Define the SupportedLanguage enum here
-enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable { // Added Hashable
+enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
     case chinese = "中文"
     case english = "English"
     case japanese = "日本語"
@@ -80,6 +80,35 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable { // Added 
         case .korean: return "언어 선택"
         case .french: return "Sélectionner la Langue"
         case .portuguese: return "Selecionar Idioma"
+        }
+    }
+
+    // Text for the "Translation will appear here" placeholder
+    var translationPlaceholderText: String {
+        switch self {
+        case .chinese: return "翻译将显示在此处"
+        case .english: return "Translation will appear here"
+        case .japanese: return "翻訳はここに表示されます"
+        case .spanish: return "La traducción aparecerá aquí"
+        case .italian: return "La traduzione apparirà qui"
+        case .korean: return "번역이 여기에 표시됩니다"
+        case .french: return "La traduction apparaîtra ici"
+        case .portuguese: return "A tradução aparecerá aqui"
+        }
+    }
+
+    // Text format for "Tap & Hold {LanguageName} button..." placeholder
+    // The "%@" will be replaced by the actual language name (e.g., "中文", "English")
+    var tapAndHoldButtonPlaceholderFormat: String {
+        switch self {
+        case .chinese: return "点击并按住 %@ 按钮..."
+        case .english: return "Tap & Hold %@ button..."
+        case .japanese: return "%@ ボタンをタップ＆ホールド..."
+        case .spanish: return "Mantén presionado el botón %@..."
+        case .italian: return "Tocca e tieni premuto il pulsante %@..."
+        case .korean: return "%@ 버튼을 길게 누르세요..."
+        case .french: return "Appuyez et maintenez le bouton %@..."
+        case .portuguese: return "Toque e segure o botão %@..."
         }
     }
 }
