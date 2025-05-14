@@ -35,106 +35,118 @@ struct TranslatorView: View {
     private var targetLocaleId: String { targetLanguage.translationLocaleIdentifier }
 
     var body: some View {
-        VStack(spacing: 20) {
-            // Recognition result box - Dynamic placeholder
-            Text(vm.recognizedText.isEmpty ?
-                 (currentMode == .sourceToTarget ? "Tap & Hold \(sourceName) button..." : "Tap & Hold \(targetName) button...") :
-                 vm.recognizedText)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
-                .overlay {
-                    if isRecordingSource || isRecordingTarget {
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(.blue, lineWidth: 2)
-                    }
-                }
-                .padding()
+        ZStack { // Added ZStack for background color
+            facebookBackgroundGray.edgesIgnoringSafeArea(.all) // Facebook-style background
 
-            // Translation result box
-            Text(translatedText.isEmpty ? "Translation will appear here" : translatedText)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
-                .overlay {
-                    if isTranslating {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
+            VStack(spacing: 20) {
+                // Recognition result box - Dynamic placeholder
+                Text(vm.recognizedText.isEmpty ?
+                     (currentMode == .sourceToTarget ? "Tap & Hold \(sourceName) button..." : "Tap & Hold \(targetName) button...") :
+                     vm.recognizedText)
+                    .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading) // Ensure minimum height
+                    .padding()
+                    .background(facebookCardBackground) // Facebook-style card background
+                    .cornerRadius(10) // Consistent corner radius
+                    .overlay {
+                        if isRecordingSource || isRecordingTarget {
+                            RoundedRectangle(cornerRadius: 10) // Consistent corner radius
+                                .stroke(facebookBlue, lineWidth: 2) // Facebook-style blue
                         }
                     }
-                }
-                .padding()
+                    .padding(.horizontal)
+                    .padding(.top, 10) // Adjusted padding
 
-            Spacer()
-
-            HStack(spacing: 40) {
-                // Source Language Recording Button
-                VStack {
-                    Button(action: {}) {
-                        Image(systemName: isRecordingSource ? "waveform" : "mic.circle.fill")
-                            .font(.system(size: 64))
-                            .foregroundStyle(isRecordingSource ? .red : .blue) // Example color
+                // Translation result box
+                Text(translatedText.isEmpty ? "Translation will appear here" : translatedText)
+                    .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading) // Ensure minimum height
+                    .padding()
+                    .background(facebookCardBackground) // Facebook-style card background
+                    .cornerRadius(10) // Consistent corner radius
+                    .overlay {
+                        if isTranslating {
+                            HStack {
+                                Spacer()
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: facebookBlue)) // Style progress view
+                                Spacer()
+                            }
+                        }
                     }
-                    .buttonStyle(.bouncy)
-                    .simultaneousGesture(
-                        DragGesture(minimumDistance: 0)
-                            .onChanged { _ in
-                                if !isRecordingSource && !isRecordingTarget {
-                                    isRecordingSource = true
-                                    currentMode = .sourceToTarget
-                                    resetState()
-                                    vm.startRecording(sourceLanguage: sourceCode) // Use dynamic code
-                                }
-                            }
-                            .onEnded { _ in
-                                if isRecordingSource {
-                                    isRecordingSource = false
-                                    vm.stopRecording()
-                                    handleRecordingEnd()
-                                }
-                            }
-                    )
-                    Text("\(sourceName) -> \(targetName)") // Dynamic label
-                        .font(.caption)
-                }
+                    .padding(.horizontal)
 
-                // Target Language Recording Button
-                VStack {
-                    Button(action: {}) {
-                        Image(systemName: isRecordingTarget ? "waveform" : "mic.circle.fill")
-                            .font(.system(size: 64))
-                            .foregroundStyle(isRecordingTarget ? .red : .green) // Example color
+
+                Spacer()
+
+                HStack(spacing: 40) {
+                    // Source Language Recording Button
+                    VStack {
+                        Button(action: {}) {
+                            Image(systemName: isRecordingSource ? "waveform.circle.fill" : "mic.circle.fill") // Changed waveform icon
+                                .font(.system(size: 70)) // Slightly larger icon
+                                .foregroundStyle(isRecordingSource ? Color.red : facebookBlue) // Facebook blue for default
+                        }
+                        .buttonStyle(.bouncy)
+                        .simultaneousGesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { _ in
+                                    if !isRecordingSource && !isRecordingTarget {
+                                        isRecordingSource = true
+                                        currentMode = .sourceToTarget
+                                        resetState()
+                                        vm.startRecording(sourceLanguage: sourceCode) // Use dynamic code
+                                    }
+                                }
+                                .onEnded { _ in
+                                    if isRecordingSource {
+                                        isRecordingSource = false
+                                        vm.stopRecording()
+                                        handleRecordingEnd()
+                                    }
+                                }
+                        )
+                        Text("\(sourceName) → \(targetName)") // Dynamic label, using arrow
+                            .font(.caption)
+                            .foregroundColor(Color(.secondaryLabel)) // Softer text color
                     }
-                    .buttonStyle(.bouncy)
-                    .simultaneousGesture(
-                        DragGesture(minimumDistance: 0)
-                            .onChanged { _ in
-                                if !isRecordingTarget && !isRecordingSource {
-                                    isRecordingTarget = true
-                                    currentMode = .targetToSource
-                                    resetState()
-                                    vm.startRecording(sourceLanguage: targetCode) // Use dynamic code
+
+                    // Target Language Recording Button
+                    VStack {
+                        Button(action: {}) {
+                            Image(systemName: isRecordingTarget ? "waveform.circle.fill" : "mic.circle.fill") // Changed waveform icon
+                                .font(.system(size: 70)) // Slightly larger icon
+                                .foregroundStyle(isRecordingTarget ? Color.red : facebookBlue) // Facebook blue for default
+                        }
+                        .buttonStyle(.bouncy)
+                        .simultaneousGesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { _ in
+                                    if !isRecordingTarget && !isRecordingSource {
+                                        isRecordingTarget = true
+                                        currentMode = .targetToSource
+                                        resetState()
+                                        vm.startRecording(sourceLanguage: targetCode) // Use dynamic code
+                                    }
                                 }
-                            }
-                            .onEnded { _ in
-                                if isRecordingTarget {
-                                    isRecordingTarget = false
-                                    vm.stopRecording()
-                                    handleRecordingEnd()
+                                .onEnded { _ in
+                                    if isRecordingTarget {
+                                        isRecordingTarget = false
+                                        vm.stopRecording()
+                                        handleRecordingEnd()
+                                    }
                                 }
-                            }
-                    )
-                    Text("\(targetName) -> \(sourceName)") // Dynamic label
-                        .font(.caption)
+                        )
+                        Text("\(targetName) → \(sourceName)") // Dynamic label, using arrow
+                            .font(.caption)
+                            .foregroundColor(Color(.secondaryLabel)) // Softer text color
+                    }
                 }
+                .padding(.bottom, 30) // Adjusted padding
             }
-            .padding(.bottom, 40)
         }
-        .navigationTitle(currentMode == .sourceToTarget ? "\(sourceName) -> \(targetName)" : "\(targetName) -> \(sourceName)")
+        .navigationTitle(currentMode == .sourceToTarget ? "\(sourceName) → \(targetName)" : "\(targetName) → \(sourceName)")
+        .navigationBarTitleDisplayMode(.inline) // Consistent with ContentView
+        .toolbarBackground(facebookCardBackground, for: .navigationBar) // Facebook-style nav bar
+        .toolbarBackground(.visible, for: .navigationBar) // Ensure nav bar background is visible
         // Translation Task for Source -> Target
         .translationTask(
             source: Locale.Language(identifier: sourceLocaleId), // Dynamic locale ID

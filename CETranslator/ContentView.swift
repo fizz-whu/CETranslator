@@ -56,84 +56,127 @@ enum SupportedLanguage: String, CaseIterable, Identifiable {
     }
 }
 
+// Facebook-inspired colors
+let facebookBlue = Color(red: 23/255, green: 120/255, blue: 242/255) // #1778F2
+let facebookBackgroundGray = Color(UIColor.systemGroupedBackground)
+let facebookCardBackground = Color(UIColor.secondarySystemGroupedBackground)
+let facebookSeparatorGray = Color(UIColor.systemGray4)
 
 struct ContentView: View {
-    // State variables to hold the selected languages
     @State private var sourceLanguage: SupportedLanguage = .chinese
     @State private var targetLanguage: SupportedLanguage = .english
-    @State private var navigateToTranslator = false // State to trigger navigation
+    @State private var navigateToTranslator = false
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 30) {
-                Text("Select Languages")
-                    .font(.title2)
-                    .padding(.top)
+            ZStack {
+                facebookBackgroundGray.edgesIgnoringSafeArea(.all)
 
-                // Picker for Source Language
-                Picker("From:", selection: $sourceLanguage) {
-                    ForEach(SupportedLanguage.allCases) { language in
-                        // Display flag and name
-                        Text(language.flagEmoji + " " + language.rawValue).tag(language)
+                VStack(spacing: 0) {
+                    // Language Selection Section
+                    VStack(spacing: 0) {
+                        LanguagePickerRow(
+                            label: "Translate From",
+                            selectedLanguage: $sourceLanguage,
+                            allLanguages: SupportedLanguage.allCases
+                        )
+                        
+                        Divider()
+                            .background(facebookSeparatorGray)
+                            .padding(.leading, 16)
+
+                        LanguagePickerRow(
+                            label: "Translate To",
+                            selectedLanguage: $targetLanguage,
+                            allLanguages: SupportedLanguage.allCases
+                        )
                     }
-                }
-                .pickerStyle(.menu) // Or .wheel, .segmented
-                .padding(.horizontal)
-
-                // Swap Button (Optional but helpful)
-                Button {
-                    let temp = sourceLanguage
-                    sourceLanguage = targetLanguage
-                    targetLanguage = temp
-                } label: {
-                    Image(systemName: "arrow.up.arrow.down.circle.fill")
-                        .font(.title)
-                }
-
-                // Picker for Target Language
-                Picker("To:", selection: $targetLanguage) {
-                    ForEach(SupportedLanguage.allCases) { language in
-                        // Display flag and name
-                        Text(language.flagEmoji + " " + language.rawValue).tag(language)
+                    .background(facebookCardBackground)
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                    .padding(.top, 20)
+                    
+                    // Swap Button
+                    Button {
+                        withAnimation {
+                            let temp = sourceLanguage
+                            sourceLanguage = targetLanguage
+                            targetLanguage = temp
+                        }
+                    } label: {
+                        Image(systemName: "arrow.up.arrow.down")
+                            .font(.system(size: 20, weight: .medium))
+                            .foregroundColor(facebookBlue)
+                            .padding()
+                            .background(facebookCardBackground)
+                            .clipShape(Circle())
+                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
                     }
-                }
-                .pickerStyle(.menu)
-                .padding(.horizontal)
+                    .padding(.vertical, 20)
 
-                Spacer() // Pushes the button to the bottom
 
-                // Navigation Button - use a symbol instead of text
-                Button {
-                    // Trigger navigation if languages are different
-                    if sourceLanguage != targetLanguage {
-                        navigateToTranslator = true
-                    } else {
-                        // Optionally show an alert if languages are the same
-                        print("Cannot translate: Source and target languages are the same.")
+                    Spacer()
+
+                    // Start Translation Button
+                    Button {
+                        if sourceLanguage != targetLanguage {
+                            navigateToTranslator = true
+                        }
+                    } label: {
+                        Text("Start Translation")
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(sourceLanguage == targetLanguage ? Color.gray : facebookBlue)
+                            .cornerRadius(10)
                     }
-                } label: {
-                    // Use a play symbol
-                    Image(systemName: "play.circle.fill")
-                        .font(.largeTitle) // Make the symbol larger
-                        .foregroundStyle(.white) // Ensure visibility on prominent button
+                    .disabled(sourceLanguage == targetLanguage)
+                    .padding(.horizontal)
+                    .padding(.bottom, 20)
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(sourceLanguage == targetLanguage) // Disable if same language
-                .padding()
-
             }
-            .navigationTitle("Translator Setup")
-            // Use the new generic TranslatorView
+            .navigationTitle("Translator")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(facebookCardBackground, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .navigationDestination(isPresented: $navigateToTranslator) {
                 TranslatorView(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage)
             }
         }
     }
-
-    // No longer need isPairSupported or translatorViewFor functions
 }
 
-// Keep the BounceButtonStyle if used elsewhere
+struct LanguagePickerRow: View {
+    var label: String
+    @Binding var selectedLanguage: SupportedLanguage
+    var allLanguages: [SupportedLanguage]
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 17))
+                .foregroundColor(Color(.label))
+            Spacer()
+            Picker(label, selection: $selectedLanguage) {
+                ForEach(allLanguages) { language in
+                    HStack {
+                        Text(language.flagEmoji)
+                        Text(language.rawValue)
+                    }.tag(language)
+                }
+            }
+            .pickerStyle(.menu)
+            .accentColor(facebookBlue) // Styles the picker's chevron
+        }
+        .padding(.horizontal)
+        .frame(height: 50)
+    }
+}
+
+// The BounceButtonStyle is not typically Facebook-like,
+// but I'll keep it here if you use it elsewhere.
+// If not, you can remove it.
 struct BounceButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -145,7 +188,6 @@ struct BounceButtonStyle: ButtonStyle {
 extension ButtonStyle where Self == BounceButtonStyle {
     static var bouncy: Self { .init() }
 }
-
 
 #Preview {
     ContentView()
