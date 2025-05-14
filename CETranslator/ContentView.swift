@@ -200,10 +200,13 @@ struct ContentView: View {
 
     // Computed property for the button's display text
     private var startTranslationButtonDisplayText: String {
+        let localizedText = sourceLanguage.startTranslationButtonText
         if sourceLanguage == .english {
-            return sourceLanguage.startTranslationButtonText
+            return localizedText
         } else {
-            return "\(sourceLanguage.startTranslationButtonText) (Start Translation)"
+            // Add English fallback, dynamically fetched
+            let englishText = SupportedLanguage.english.startTranslationButtonText
+            return "\(localizedText) (\(englishText))"
         }
     }
 
@@ -245,7 +248,7 @@ struct ContentView: View {
                             navigateToTranslator = true
                         }
                     } label: {
-                        Text(sourceLanguage.startTranslationButtonText) // Use the dynamic text
+                        Text(startTranslationButtonDisplayText) // Use the updated computed property here
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
