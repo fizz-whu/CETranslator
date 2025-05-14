@@ -36,10 +36,14 @@ struct TranslatorView: View {
 
     // Computed property for the dynamic translation placeholder text
     private var dynamicTranslationPlaceholder: String {
+        let localizedText = sourceLanguage.translationPlaceholderText // Text in sourceLanguage
+
         if sourceLanguage == .english {
-            return sourceLanguage.translationPlaceholderText // This line needs translationPlaceholderText to exist in SupportedLanguage
+            return localizedText // Already English
         } else {
-            return "\(sourceLanguage.translationPlaceholderText) (Translation will appear here)" // Same here
+            // Add English fallback, dynamically fetched
+            let englishFallbackText = SupportedLanguage.english.translationPlaceholderText
+            return "\(localizedText) (\(englishFallbackText))"
         }
     }
 
@@ -61,6 +65,34 @@ struct TranslatorView: View {
             // Create the English version of the placeholder by inserting the *active* language name
             let englishFallbackText = String(format: englishFormat, activeLanguageName)
             return "\(localizedPlaceholder) (\(englishFallbackText))"
+        }
+    }
+
+    // Computed property for the left microphone button label
+    private var leftMicrophoneButtonLabel: String {
+        let localizedFormat = sourceLanguage.tapAndHoldToSpeakLabelFormat
+        let localizedLabel = String(format: localizedFormat, sourceName)
+
+        if sourceLanguage == .english {
+            return localizedLabel
+        } else {
+            let englishFormat = SupportedLanguage.english.tapAndHoldToSpeakLabelFormat
+            let englishFallbackText = String(format: englishFormat, sourceName)
+            return "\(localizedLabel) (\(englishFallbackText))"
+        }
+    }
+
+    // Computed property for the right microphone button label
+    private var rightMicrophoneButtonLabel: String {
+        let localizedFormat = targetLanguage.tapAndHoldToSpeakLabelFormat
+        let localizedLabel = String(format: localizedFormat, targetName)
+
+        if targetLanguage == .english {
+            return localizedLabel
+        } else {
+            let englishFormat = SupportedLanguage.english.tapAndHoldToSpeakLabelFormat
+            let englishFallbackText = String(format: englishFormat, targetName)
+            return "\(localizedLabel) (\(englishFallbackText))"
         }
     }
 
@@ -111,11 +143,12 @@ struct TranslatorView: View {
                     // Source Language Recording Button
                     VStack {
                         Button(action: {}) {
-                            Image(systemName: isRecordingSource ? "waveform.circle.fill" : "mic.circle.fill") // Changed waveform icon
+                            Image(systemName: isRecordingSource ? "waveform.circle.fill" : "mic.circle.fill") // Filled icon for source
                                 .font(.system(size: 70)) // Slightly larger icon
                                 .foregroundStyle(isRecordingSource ? Color.red : facebookBlue) // Facebook blue for default
                         }
                         .buttonStyle(.bouncy)
+                        .accessibilityLabel(leftMicrophoneButtonLabel) // Added for accessibility
                         .simultaneousGesture(
                             DragGesture(minimumDistance: 0)
                                 .onChanged { _ in
@@ -142,11 +175,12 @@ struct TranslatorView: View {
                     // Target Language Recording Button
                     VStack {
                         Button(action: {}) {
-                            Image(systemName: isRecordingTarget ? "waveform.circle.fill" : "mic.circle.fill") // Changed waveform icon
+                            Image(systemName: isRecordingTarget ? "waveform.circle.fill" : "mic.circle") // Outlined icon for target
                                 .font(.system(size: 70)) // Slightly larger icon
                                 .foregroundStyle(isRecordingTarget ? Color.red : facebookBlue) // Facebook blue for default
                         }
                         .buttonStyle(.bouncy)
+                        .accessibilityLabel(rightMicrophoneButtonLabel) // Added for accessibility
                         .simultaneousGesture(
                             DragGesture(minimumDistance: 0)
                                 .onChanged { _ in

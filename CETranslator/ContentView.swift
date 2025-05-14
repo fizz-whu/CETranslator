@@ -111,6 +111,21 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .portuguese: return "Toque e segure o botão %@..."
         }
     }
+
+    // Text format for "Tap and hold to speak {LanguageName}" label
+    // The "%@" will be replaced by the actual language name
+    var tapAndHoldToSpeakLabelFormat: String {
+        switch self {
+        case .chinese: return "点击并按住以讲 %@"
+        case .english: return "Tap and hold to speak %@"
+        case .japanese: return "長押しして %@ を話す"
+        case .spanish: return "Mantén presionado para hablar %@"
+        case .italian: return "Tocca e tieni premuto per parlare %@"
+        case .korean: return "%@ (으)로 말하려면 길게 누르세요"
+        case .french: return "Appuyez et maintenez pour parler %@"
+        case .portuguese: return "Toque e segure para falar %@"
+        }
+    }
 }
 
 // Facebook-inspired colors
