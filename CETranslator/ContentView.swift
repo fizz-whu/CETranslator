@@ -62,6 +62,54 @@ let facebookBackgroundGray = Color(UIColor.systemGroupedBackground)
 let facebookCardBackground = Color(UIColor.secondarySystemGroupedBackground)
 let facebookSeparatorGray = Color(UIColor.systemGray4)
 
+// New View for the Menu Label
+struct LanguageMenuLabelView: View {
+    let language: SupportedLanguage
+
+    var body: some View {
+        HStack {
+            Text(language.flagEmoji)
+            Text(language.rawValue)
+            Spacer()
+            Image(systemName: "chevron.down")
+                .font(.caption.weight(.semibold))
+                .foregroundColor(.secondary) // Changed from Color(.systemGray2)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 12)
+        .background(facebookCardBackground)
+        .cornerRadius(10)
+        .foregroundColor(.primary) // Changed from Color(.label)
+    }
+}
+
+// New View for the entire Language Selection Menu
+struct LanguageSelectionMenu: View {
+    @Binding var selectedLanguage: SupportedLanguage
+    let allLanguages: [SupportedLanguage]
+
+    var body: some View {
+        Menu {
+            ForEach(allLanguages) { language in
+                Button {
+                    selectedLanguage = language
+                } label: {
+                    HStack {
+                        Text(language.flagEmoji)
+                        Text(language.rawValue)
+                            .foregroundColor(.primary) // Changed from Color(.primary)
+                            .padding(.leading, 2)
+                    }
+                }
+            }
+        } label: {
+            LanguageMenuLabelView(language: selectedLanguage)
+        }
+        // .accentColor(facebookBlue) // accentColor on Menu might not style the label as expected
+    }
+}
+
 struct ContentView: View {
     @State private var sourceLanguage: SupportedLanguage = .chinese
     @State private var targetLanguage: SupportedLanguage = .english
@@ -72,48 +120,21 @@ struct ContentView: View {
             ZStack {
                 facebookBackgroundGray.edgesIgnoringSafeArea(.all)
 
-                VStack(spacing: 0) {
+                VStack(spacing: 20) { // Adjusted spacing
                     // Language Selection Section
-                    VStack(spacing: 0) {
-                        LanguagePickerRow(
-                            label: "Translate From",
-                            selectedLanguage: $sourceLanguage,
-                            allLanguages: SupportedLanguage.allCases
-                        )
-                        
-                        Divider()
-                            .background(facebookSeparatorGray)
-                            .padding(.leading, 16)
+                    HStack(spacing: 10) { // Use HStack for side-by-side pickers
+                        LanguageSelectionMenu(selectedLanguage: $sourceLanguage, allLanguages: SupportedLanguage.allCases)
 
-                        LanguagePickerRow(
-                            label: "Translate To",
-                            selectedLanguage: $targetLanguage,
-                            allLanguages: SupportedLanguage.allCases
-                        )
+                        Image(systemName: "arrow.right")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.secondary) // Changed from Color(.systemGray2)
+
+                        LanguageSelectionMenu(selectedLanguage: $targetLanguage, allLanguages: SupportedLanguage.allCases)
                     }
-                    .background(facebookCardBackground)
-                    .cornerRadius(10)
                     .padding(.horizontal)
                     .padding(.top, 20)
                     
-                    // Swap Button
-                    Button {
-                        withAnimation {
-                            let temp = sourceLanguage
-                            sourceLanguage = targetLanguage
-                            targetLanguage = temp
-                        }
-                    } label: {
-                        Image(systemName: "arrow.up.arrow.down")
-                            .font(.system(size: 20, weight: .medium))
-                            .foregroundColor(facebookBlue)
-                            .padding()
-                            .background(facebookCardBackground)
-                            .clipShape(Circle())
-                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-                    }
-                    .padding(.vertical, 20)
-
+                    // Removed Swap Button
 
                     Spacer()
 
@@ -147,33 +168,9 @@ struct ContentView: View {
     }
 }
 
-struct LanguagePickerRow: View {
-    var label: String
-    @Binding var selectedLanguage: SupportedLanguage
-    var allLanguages: [SupportedLanguage]
+// Removed LanguagePickerRow as it's no longer used in this layout
 
-    var body: some View {
-        HStack {
-            Text(label)
-                .font(.system(size: 17))
-                .foregroundColor(Color(.label))
-            Spacer()
-            Picker(label, selection: $selectedLanguage) {
-                ForEach(allLanguages) { language in
-                    HStack {
-                        Text(language.flagEmoji)
-                        Text(language.rawValue)
-                    }.tag(language)
-                }
-            }
-            .pickerStyle(.menu)
-            .accentColor(facebookBlue) // Styles the picker's chevron
-        }
-        .padding(.horizontal)
-        .frame(height: 50)
-    }
-}
-
+// Keep the BounceButtonStyle if used elsewhere
 // The BounceButtonStyle is not typically Facebook-like,
 // but I'll keep it here if you use it elsewhere.
 // If not, you can remove it.
