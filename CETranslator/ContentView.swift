@@ -1,7 +1,7 @@
 import SwiftUI
 
 // Define the SupportedLanguage enum here
-enum SupportedLanguage: String, CaseIterable, Identifiable {
+enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable { // Added Hashable
     case chinese = "中文"
     case english = "English"
     case japanese = "日本語"
@@ -54,6 +54,20 @@ enum SupportedLanguage: String, CaseIterable, Identifiable {
         case .portuguese: return "pt"
         }
     }
+
+    // Text for the "Start Translation" button in this language
+    var startTranslationButtonText: String {
+        switch self {
+        case .chinese: return "开始翻译"
+        case .english: return "Start Translation"
+        case .japanese: return "翻訳を開始"
+        case .spanish: return "Iniciar Traducción"
+        case .italian: return "Inizia Traduzione"
+        case .korean: return "번역 시작"
+        case .french: return "Commencer la Traduction"
+        case .portuguese: return "Iniciar Tradução"
+        }
+    }
 }
 
 // Facebook-inspired colors
@@ -62,25 +76,41 @@ let facebookBackgroundGray = Color(UIColor.systemGroupedBackground)
 let facebookCardBackground = Color(UIColor.secondarySystemGroupedBackground)
 let facebookSeparatorGray = Color(UIColor.systemGray4)
 
-// New View for the Menu Label
+// New View for the Menu Label (displays the selected language)
 struct LanguageMenuLabelView: View {
     let language: SupportedLanguage
 
     var body: some View {
         HStack {
-            Text(language.flagEmoji)
             Text(language.rawValue)
+            Text(language.flagEmoji) 
+                .padding(.leading, 4) 
             Spacer()
             Image(systemName: "chevron.down")
                 .font(.caption.weight(.semibold))
-                .foregroundColor(.secondary) // Changed from Color(.systemGray2)
+                .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 12)
         .padding(.vertical, 12)
         .background(facebookCardBackground)
         .cornerRadius(10)
-        .foregroundColor(.primary) // Changed from Color(.label)
+        .foregroundColor(.primary)
+    }
+}
+
+// New dedicated View for each item in the dropdown menu
+struct LanguageMenuItemRow: View {
+    let language: SupportedLanguage
+
+    var body: some View {
+        HStack {
+            Text(language.rawValue)
+            Text(language.flagEmoji)
+                .padding(.leading, 4) // Optional: adjust spacing
+            Spacer() // Ensures content is pushed to the left
+        }
+        .contentShape(Rectangle()) // Helps with tap targets in some cases
     }
 }
 
@@ -95,18 +125,13 @@ struct LanguageSelectionMenu: View {
                 Button {
                     selectedLanguage = language
                 } label: {
-                    HStack {
-                        Text(language.flagEmoji)
-                        Text(language.rawValue)
-                            .foregroundColor(.primary) // Changed from Color(.primary)
-                            .padding(.leading, 2)
-                    }
+                    LanguageMenuItemRow(language: language) // Use the new dedicated view
                 }
             }
         } label: {
             LanguageMenuLabelView(language: selectedLanguage)
         }
-        // .accentColor(facebookBlue) // accentColor on Menu might not style the label as expected
+        // .accentColor(facebookBlue)
     }
 }
 
@@ -144,7 +169,7 @@ struct ContentView: View {
                             navigateToTranslator = true
                         }
                     } label: {
-                        Text("Start Translation")
+                        Text(sourceLanguage.startTranslationButtonText) // Use the dynamic text
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
