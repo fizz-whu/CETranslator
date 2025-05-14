@@ -68,6 +68,20 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable { // Added 
         case .portuguese: return "Iniciar Tradução"
         }
     }
+
+    // Text for the "Select Language" navigation title in this language
+    var selectLanguageTitleText: String {
+        switch self {
+        case .chinese: return "选择语言"
+        case .english: return "Select Language"
+        case .japanese: return "言語を選択"
+        case .spanish: return "Seleccionar Idioma"
+        case .italian: return "Seleziona Lingua"
+        case .korean: return "언어 선택"
+        case .french: return "Sélectionner la Langue"
+        case .portuguese: return "Selecionar Idioma"
+        }
+    }
 }
 
 // Facebook-inspired colors
@@ -140,6 +154,24 @@ struct ContentView: View {
     @State private var targetLanguage: SupportedLanguage = .english
     @State private var navigateToTranslator = false
 
+    // Computed property for the button's display text
+    private var startTranslationButtonDisplayText: String {
+        if sourceLanguage == .english {
+            return sourceLanguage.startTranslationButtonText
+        } else {
+            return "\(sourceLanguage.startTranslationButtonText) (Start Translation)"
+        }
+    }
+
+    // Computed property for the navigation bar title
+    private var navigationBarTitleText: String {
+        if sourceLanguage == .english {
+            return sourceLanguage.selectLanguageTitleText
+        } else {
+            return "\(sourceLanguage.selectLanguageTitleText) (Select Language)"
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -182,7 +214,7 @@ struct ContentView: View {
                     .padding(.bottom, 20)
                 }
             }
-            .navigationTitle("Translator")
+            .navigationTitle(navigationBarTitleText) // Use the new computed property for the title
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(facebookCardBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
