@@ -70,28 +70,24 @@ struct TranslatorView: View {
 
     // Computed property for the left microphone button label
     private var leftMicrophoneButtonLabel: String {
-        let localizedFormat = sourceLanguage.tapAndHoldToSpeakLabelFormat
-        let localizedLabel = String(format: localizedFormat, sourceName)
+        let localizedLabel = sourceLanguage.tapAndHoldToSpeakLabelFormat // Directly use the string
 
         if sourceLanguage == .english {
             return localizedLabel
         } else {
-            let englishFormat = SupportedLanguage.english.tapAndHoldToSpeakLabelFormat
-            let englishFallbackText = String(format: englishFormat, sourceName)
+            let englishFallbackText = SupportedLanguage.english.tapAndHoldToSpeakLabelFormat // Directly use the English string
             return "\(localizedLabel) (\(englishFallbackText))"
         }
     }
 
     // Computed property for the right microphone button label
     private var rightMicrophoneButtonLabel: String {
-        let localizedFormat = targetLanguage.tapAndHoldToSpeakLabelFormat
-        let localizedLabel = String(format: localizedFormat, targetName)
+        let localizedLabel = targetLanguage.tapAndHoldToSpeakLabelFormat // Directly use the string
 
         if targetLanguage == .english {
             return localizedLabel
         } else {
-            let englishFormat = SupportedLanguage.english.tapAndHoldToSpeakLabelFormat
-            let englishFallbackText = String(format: englishFormat, targetName)
+            let englishFallbackText = SupportedLanguage.english.tapAndHoldToSpeakLabelFormat // Directly use the English string
             return "\(localizedLabel) (\(englishFallbackText))"
         }
     }

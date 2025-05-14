@@ -99,31 +99,31 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
 
     // Text format for "Tap & Hold {LanguageName} button..." placeholder
     // The "%@" will be replaced by the actual language name (e.g., "中文", "English")
-    var tapAndHoldButtonPlaceholderFormat: String {
+    var tapAndHoldButtonPlaceholderFormat: String { // This will now be the general instruction
         switch self {
-        case .chinese: return "点击并按住 %@ 按钮..."
-        case .english: return "Tap & Hold %@ button..."
-        case .japanese: return "%@ ボタンをタップ＆ホールド..."
-        case .spanish: return "Mantén presionado el botón %@..."
-        case .italian: return "Tocca e tieni premuto il pulsante %@..."
-        case .korean: return "%@ 버튼을 길게 누르세요..."
-        case .french: return "Appuyez et maintenez le bouton %@..."
-        case .portuguese: return "Toque e segure o botão %@..."
+        case .chinese: return "点击并按住下方的麦克风按钮讲话，松开以翻译"
+        case .english: return "Tap and hold a microphone button below to speak, then release to translate."
+        case .japanese: return "下のマイクボタンを長押しして話し、離して翻訳します"
+        case .spanish: return "Mantén presionado un botón de micrófono abajo para hablar, luego suelta para traducir."
+        case .italian: return "Tocca e tieni premuto un pulsante del microfono in basso per parlare, quindi rilascia per tradurre."
+        case .korean: return "아래 마이크 버튼을 길게 눌러 말하고 손을 떼면 번역됩니다."
+        case .french: return "Appuyez et maintenez un bouton de microphone ci-dessous pour parler, puis relâchez pour traduire."
+        case .portuguese: return "Toque e segure um botão de microfone abaixo para falar e solte para traduzir."
         }
     }
 
     // Text format for "Tap and hold to speak {LanguageName}" label
     // The "%@" will be replaced by the actual language name
-    var tapAndHoldToSpeakLabelFormat: String {
+    var tapAndHoldToSpeakLabelFormat: String { // Note: This property might be better named e.g., tapAndHoldInstructionText now
         switch self {
-        case .chinese: return "点击并按住以讲 %@"
-        case .english: return "Tap and hold to speak %@"
-        case .japanese: return "長押しして %@ を話す"
-        case .spanish: return "Mantén presionado para hablar %@"
-        case .italian: return "Tocca e tieni premuto per parlare %@"
-        case .korean: return "%@ (으)로 말하려면 길게 누르세요"
-        case .french: return "Appuyez et maintenez pour parler %@"
-        case .portuguese: return "Toque e segure para falar %@"
+        case .chinese: return "点击并按住下方的麦克风按钮讲话，松开以翻译"
+        case .english: return "Tap and hold a microphone button below to speak, then release to translate."
+        case .japanese: return "下のマイクボタンを長押しして話し、離して翻訳します"
+        case .spanish: return "Mantén presionado un botón de micrófono abajo para hablar, luego suelta para traducir."
+        case .italian: return "Tocca e tieni premuto un pulsante del microfono in basso per parlare, quindi rilascia per tradurre."
+        case .korean: return "아래 마이크 버튼을 길게 눌러 말하고 손을 떼면 번역됩니다."
+        case .french: return "Appuyez et maintenez un bouton de microphone ci-dessous pour parler, puis relâchez pour traduire."
+        case .portuguese: return "Toque e segure um botão de microfone abaixo para falar e solte para traduzir."
         }
     }
 }
