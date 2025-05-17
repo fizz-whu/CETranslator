@@ -186,12 +186,10 @@ struct LanguageMenuItemRow: View {
 
     var body: some View {
         HStack {
-            Text(language.rawValue)
-            Text(language.flagEmoji)
-                .padding(.leading, 4) // Optional: adjust spacing
-            Spacer() // Ensures content is pushed to the left
+            Text("\(language.flagEmoji) \(language.rawValue)") // Concatenate flag and name in one Text view
+            // Spacer() // Keep Spacer commented out or remove if not needed for alignment
         }
-        .contentShape(Rectangle()) // Helps with tap targets in some cases
+        // .contentShape(Rectangle()) // Keep commented out or remove
     }
 }
 
