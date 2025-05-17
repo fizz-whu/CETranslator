@@ -126,6 +126,29 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .portuguese: return "Toque e segure um botão de microfone abaixo para falar e solte para traduzir."
         }
     }
+
+    // Add this new property:
+    var localizedTranslateWord: String {
+        switch self {
+        case .english:
+            return "Translate" // For English, it's just "Translate"
+        case .chinese:
+            return "翻译" // Example for Chinese
+        case .spanish:
+            return "Traducir" // Example for Spanish
+        case .japanese:
+            return "翻訳" // Example for Japanese
+        case .italian:
+            return "Traduci" // Example for Italian
+        case .korean:
+            return "번역" // Example for Korean
+        case .french:
+            return "Traduire" // Example for French
+        case .portuguese:
+            return "Traduzir" // Example for Portuguese
+        // Add cases for all your supported languages
+        }
+    }
 }
 
 // Facebook-inspired colors

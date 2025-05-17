@@ -93,6 +93,19 @@ struct TranslatorView: View {
         }
     }
 
+    // Computed property for the dynamic translate button label
+    private var translateButtonLabel: String {
+        let englishBaseText = "Translate"
+
+        if sourceLanguage == .english {
+            return englishBaseText // e.g., "Translate"
+        } else {
+            // Accesses the 'localizedTranslateWord' property from SupportedLanguage
+            let localizedTranslateWord = sourceLanguage.localizedTranslateWord 
+            return "\(englishBaseText) (\(localizedTranslateWord))" // e.g., "Translate (翻译)"
+        }
+    }
+
     var body: some View {
         ZStack { // Added ZStack for background color
             facebookBackgroundGray.edgesIgnoringSafeArea(.all) // Facebook-style background
@@ -132,7 +145,7 @@ struct TranslatorView: View {
                                             await handleTranslation()
                                         }
                                     }) {
-                                        Text("Translate")
+                                        Text(translateButtonLabel) // Use the new dynamic label
                                             .font(.caption)
                                             .padding(.horizontal, 10)
                                             .padding(.vertical, 5)
