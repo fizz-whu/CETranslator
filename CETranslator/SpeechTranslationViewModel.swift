@@ -137,8 +137,15 @@ final class SpeechTranslationViewModel: ObservableObject {
             isRecording = false
             return
         }
-        request.requiresOnDeviceRecognition = false
+        // Consider setting requiresOnDeviceRecognition based on availability if needed
+        // request.requiresOnDeviceRecognition = selectedRecognizer.supportsOnDeviceRecognition
+        request.requiresOnDeviceRecognition = false // Keep as false for now
         request.taskHint = .dictation
+
+        // Add this line to request punctuation
+        if #available(iOS 16.0, *) {
+            request.addsPunctuation = true
+        }
 
         let session = AVAudioSession.sharedInstance()
         do {
