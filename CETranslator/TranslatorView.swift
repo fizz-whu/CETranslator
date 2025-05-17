@@ -19,6 +19,7 @@ struct TranslatorView: View {
     @State private var translationSessionTargetToSource: Translation.TranslationSession?
     @State private var synthesizer = AVSpeechSynthesizer()
     @State private var currentMode: TranslationDirection = .sourceToTarget // Default direction
+    @State private var isMuted = false // Add this state variable for mute functionality
 
     // Enum to manage translation direction
     enum TranslationDirection {
@@ -97,23 +98,77 @@ struct TranslatorView: View {
             facebookBackgroundGray.edgesIgnoringSafeArea(.all) // Facebook-style background
 
             VStack(spacing: 20) {
-                // Recognition result box - Dynamic placeholder
-                Text(vm.recognizedText.isEmpty ?
-                     dynamicRecognitionPlaceholder : // Use the new computed property here
-                     vm.recognizedText)
-                    .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading)
-                    .foregroundColor(vm.recognizedText.isEmpty ? .secondary : .primary) // Add this line
-                    .padding()
-                    .background(facebookCardBackground)
-                    .cornerRadius(10)
-                    .overlay {
-                        if isRecordingSource || isRecordingTarget {
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(facebookBlue, lineWidth: 2)
+                // Recognition result box - Dynamic placeholder with TextEditor
+                ZStack(alignment: .topLeading) {
+                    if vm.recognizedText.isEmpty {
+                        Text(dynamicRecognitionPlaceholder)
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 8)
+                    }
+                    TextEditor(text: $vm.recognizedText)
+                        .frame(maxWidth: .infinity, minHeight: 100, maxHeight: 100)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 8)
+                        .opacity(vm.recognizedText.isEmpty ? 0.25 : 1)
+                        .underline(!vm.recognizedText.isEmpty, color: facebookBlue)
+                }
+                .padding()
+                .background(facebookCardBackground)
+                .cornerRadius(10)
+                .overlay( // Add an overlay for the button
+                    Group { // Use a Group to conditionally show the button
+                        if !vm.recognizedText.isEmpty && !isRecordingSource && !isRecordingTarget { // Modified condition
+                            VStack {
+                                Spacer() // Pushes the button to the bottom
+                                HStack {
+                                    Spacer() // Pushes the button to the right
+                                    Button(action: {
+                                        print("Translate button tapped. Recognized text: '\(vm.recognizedText)'") // Debug
+                                        currentMode = .sourceToTarget
+                                        textToTranslate = vm.recognizedText
+                                        Task {
+                                            print("Calling handleTranslation from button for: '\(textToTranslate)'") // Debug
+                                            await handleTranslation()
+                                        }
+                                    }) {
+                                        Text("Translate")
+                                            .font(.caption)
+                                            .padding(.horizontal, 10)
+                                            .padding(.vertical, 5)
+                                            .foregroundColor(.white)
+                                            .background(facebookBlue)
+                                            .cornerRadius(8)
+                                    }
+                                    .padding([.bottom, .trailing], 10) // Add some padding from the edges
+                                }
+                            }
                         }
                     }
-                    .padding(.horizontal)
-                    .padding(.top, 10)
+                )
+                .overlay { // Keep the existing border overlay
+                    if isRecordingSource || isRecordingTarget {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(facebookBlue, lineWidth: 2)
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.top, 10)
+                .contentShape(Rectangle()) // Ensure the entire area is tappable for the old gesture
+                .onTapGesture { // This gesture makes the area clickable (can be kept or removed)
+                    print("Source input box (ZStack) tapped. Recognized text: '\(vm.recognizedText)' Is empty: \(vm.recognizedText.isEmpty)") // Debug
+                    if !vm.recognizedText.isEmpty {
+                        print("Text is not empty (ZStack tap). Proceeding with translation.") // Debug
+                        currentMode = .sourceToTarget
+                        textToTranslate = vm.recognizedText
+                        Task {
+                            print("Calling handleTranslation (ZStack tap) for: '\(textToTranslate)'") // Debug
+                            await handleTranslation()
+                        }
+                    } else {
+                        print("Tap ignored (ZStack tap): vm.recognizedText is empty.") // Debug
+                    }
+                }
 
                 // Translation result box
                 Text(translatedText.isEmpty ? dynamicTranslationPlaceholder : translatedText)
@@ -122,7 +177,7 @@ struct TranslatorView: View {
                     .padding()
                     .background(facebookCardBackground)
                     .cornerRadius(10)
-                    .overlay {
+                    .overlay { // Existing overlay for ProgressView
                         if isTranslating {
                             HStack {
                                 Spacer()
@@ -130,6 +185,23 @@ struct TranslatorView: View {
                                     .progressViewStyle(CircularProgressViewStyle(tint: facebookBlue)) // Style progress view
                                 Spacer()
                             }
+                        }
+                    }
+                    .overlay(alignment: .bottomTrailing) { // New overlay for Mute Button
+                        if !translatedText.isEmpty {
+                            Button(action: {
+                                isMuted.toggle()
+                                print("Mute button tapped. isMuted: \(isMuted)")
+                                if isMuted {
+                                    synthesizer.stopSpeaking(at: .immediate) // Stop current speech if muted
+                                }
+                            }) {
+                                Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                                    .font(.title3) // Adjust icon size as needed
+                                    .padding(10)   // Padding around the icon
+                                    .foregroundColor(facebookBlue) // Consistent styling
+                            }
+                            .padding(5) // Padding from the corner of the text box
                         }
                     }
                     .padding(.horizontal)
@@ -304,6 +376,10 @@ struct TranslatorView: View {
     }
 
     private func speakText(_ text: String, language: String) {
+         guard !isMuted else { // Check if muted
+             print("🔇 Muted: Skipping speech for '\(text)'")
+             return
+         }
          guard !text.isEmpty else { return }
          do {
              try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
