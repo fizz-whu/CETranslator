@@ -101,25 +101,27 @@ struct TranslatorView: View {
                 Text(vm.recognizedText.isEmpty ?
                      dynamicRecognitionPlaceholder : // Use the new computed property here
                      vm.recognizedText)
-                    .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading) // Ensure minimum height
+                    .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading)
+                    .foregroundColor(vm.recognizedText.isEmpty ? .secondary : .primary) // Add this line
                     .padding()
-                    .background(facebookCardBackground) // Facebook-style card background
-                    .cornerRadius(10) // Consistent corner radius
+                    .background(facebookCardBackground)
+                    .cornerRadius(10)
                     .overlay {
                         if isRecordingSource || isRecordingTarget {
-                            RoundedRectangle(cornerRadius: 10) // Consistent corner radius
-                                .stroke(facebookBlue, lineWidth: 2) // Facebook-style blue
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(facebookBlue, lineWidth: 2)
                         }
                     }
                     .padding(.horizontal)
-                    .padding(.top, 10) // Adjusted padding
+                    .padding(.top, 10)
 
                 // Translation result box
-                Text(translatedText.isEmpty ? dynamicTranslationPlaceholder : translatedText) // Use the new computed property
-                    .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading) // Ensure minimum height
+                Text(translatedText.isEmpty ? dynamicTranslationPlaceholder : translatedText)
+                    .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading)
+                    .foregroundColor(translatedText.isEmpty ? .secondary : .primary) // Add this line
                     .padding()
-                    .background(facebookCardBackground) // Facebook-style card background
-                    .cornerRadius(10) // Consistent corner radius
+                    .background(facebookCardBackground)
+                    .cornerRadius(10)
                     .overlay {
                         if isTranslating {
                             HStack {
