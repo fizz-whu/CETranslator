@@ -200,21 +200,34 @@ struct TranslatorView: View {
                             }
                         }
                     }
-                    .overlay(alignment: .bottomTrailing) { // New overlay for Mute Button
+                    .overlay(alignment: .bottomTrailing) { // Overlay for Mute and Copy Buttons
                         if !translatedText.isEmpty {
-                            Button(action: {
-                                isMuted.toggle()
-                                print("Mute button tapped. isMuted: \(isMuted)")
-                                if isMuted {
-                                    synthesizer.stopSpeaking(at: .immediate) // Stop current speech if muted
+                            HStack(spacing: 15) { // Use HStack to place buttons side-by-side
+                                // Mute Button (existing)
+                                Button(action: {
+                                    isMuted.toggle()
+                                    print("Mute button tapped. isMuted: \(isMuted)")
+                                    if isMuted {
+                                        synthesizer.stopSpeaking(at: .immediate) // Stop current speech if muted
+                                    }
+                                }) {
+                                    Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                                        .font(.title3)
+                                        .foregroundColor(facebookBlue)
                                 }
-                            }) {
-                                Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
-                                    .font(.title3) // Adjust icon size as needed
-                                    .padding(10)   // Padding around the icon
-                                    .foregroundColor(facebookBlue) // Consistent styling
+
+                                // Copy Button (new)
+                                Button(action: {
+                                    UIPasteboard.general.string = translatedText
+                                    print("📋 Copied to clipboard: '\(translatedText)'")
+                                    // Optionally, provide user feedback (e.g., a temporary toast message)
+                                }) {
+                                    Image(systemName: "doc.on.doc") // Icon for copy
+                                        .font(.title3) // Consistent icon size
+                                        .foregroundColor(facebookBlue) // Consistent styling
+                                }
                             }
-                            .padding(5) // Padding from the corner of the text box
+                            .padding(10) // Padding for the HStack containing buttons
                         }
                     }
                     .padding(.horizontal)
