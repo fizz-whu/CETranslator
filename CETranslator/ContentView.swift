@@ -101,14 +101,14 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
     // The "%@" will be replaced by the actual language name (e.g., "中文", "English")
     var tapAndHoldButtonPlaceholderFormat: String { // This will now be the general instruction
         switch self {
-        case .chinese: return "点击并按住下方的麦克风按钮讲话，松开以翻译"
-        case .english: return "Tap and hold a microphone button below to speak, then release to translate."
-        case .japanese: return "下のマイクボタンを長押しして話し、離して翻訳します"
-        case .spanish: return "Mantén presionado un botón de micrófono abajo para hablar, luego suelta para traducir."
-        case .italian: return "Tocca e tieni premuto un pulsante del microfono in basso per parlare, quindi rilascia per tradurre."
-        case .korean: return "아래 마이크 버튼을 길게 눌러 말하고 손을 떼면 번역됩니다."
-        case .french: return "Appuyez et maintenez un bouton de microphone ci-dessous pour parler, puis relâchez pour traduire."
-        case .portuguese: return "Toque e segure um botão de microfone abaixo para falar e solte para traduzir."
+        case .chinese: return "长按麦克风说话 🎤"
+        case .english: return "Press & Hold microphone to speak 🎤"
+        case .japanese: return "マイクを長押しして話す 🎤"
+        case .spanish: return "Mantén presionado el micrófono para hablar 🎤"
+        case .italian: return "Tieni premuto il microfono per parlare 🎤"
+        case .korean: return "마이크를 길게 눌러 말하세요 🎤"
+        case .french: return "Maintenez le micro pour parler 🎤"
+        case .portuguese: return "Pressione e segure o microfone para falar 🎤"
         }
     }
 
@@ -116,14 +116,14 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
     // The "%@" will be replaced by the actual language name
     var tapAndHoldToSpeakLabelFormat: String { // Note: This property might be better named e.g., tapAndHoldInstructionText now
         switch self {
-        case .chinese: return "点击并按住下方的麦克风按钮讲话，松开以翻译"
-        case .english: return "Tap and hold a microphone button below to speak, then release to translate."
-        case .japanese: return "下のマイクボタンを長押しして話し、離して翻訳します"
-        case .spanish: return "Mantén presionado un botón de micrófono abajo para hablar, luego suelta para traducir."
-        case .italian: return "Tocca e tieni premuto un pulsante del microfono in basso per parlare, quindi rilascia per tradurre."
-        case .korean: return "아래 마이크 버튼을 길게 눌러 말하고 손을 떼면 번역됩니다."
-        case .french: return "Appuyez et maintenez un bouton de microphone ci-dessous pour parler, puis relâchez pour traduire."
-        case .portuguese: return "Toque e segure um botão de microfone abaixo para falar e solte para traduzir."
+        case .chinese: return "长按说话"
+        case .english: return "Press & Hold to speak"
+        case .japanese: return "長押しして話す"
+        case .spanish: return "Mantén presionado para hablar"
+        case .italian: return "Tieni premuto per parlare"
+        case .korean: return "길게 눌러 말하기"
+        case .french: return "Maintenez pour parler"
+        case .portuguese: return "Pressione e segure para falar"
         }
     }
 
@@ -227,7 +227,7 @@ struct ContentView: View {
         } else {
             // Add English fallback, dynamically fetched
             let englishText = SupportedLanguage.english.startTranslationButtonText
-            return "\(localizedText) (\(englishText))"
+            return "\(localizedText) | \(englishText)"
         }
     }
 
@@ -236,7 +236,7 @@ struct ContentView: View {
         if sourceLanguage == .english {
             return sourceLanguage.selectLanguageTitleText
         } else {
-            return "\(sourceLanguage.selectLanguageTitleText) (Select Language)"
+            return "\(sourceLanguage.selectLanguageTitleText) | Select Language"
         }
     }
 

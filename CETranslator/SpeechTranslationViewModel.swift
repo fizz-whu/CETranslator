@@ -53,40 +53,40 @@ final class SpeechTranslationViewModel: ObservableObject {
         case "no_speech_detected":
             switch language {
             case "zh-Hans":
-                return "让我们再试一次！请按住麦克风并靠近设备说话 🎤"
+                return "没有检测到语音\n请长按麦克风并清晰说话 🎤"
             case "ja-JP":
-                return "もう一度試してみましょう！マイクを長押しして、デバイスに近づいて話してください 🎤"
+                return "音声が検出されませんでした\nマイクを長押しして、はっきりと話してください 🎤"
             case "es-ES":
-                return "¡Intentémoslo de nuevo! Por favor, mantén presionado el micrófono y habla más cerca del dispositivo 🎤"
+                return "No se detectó voz\nMantén presionado el micrófono y habla claramente 🎤"
             case "it-IT":
-                return "Riproviamo! Tieni premuto il microfono e parla più vicino al dispositivo 🎤"
+                return "Nessuna voce rilevata\nTieni premuto il microfono e parla chiaramente 🎤"
             case "ko-KR":
-                return "다시 시도해 보겠습니다! 마이크를 길게 누르고 기기에 더 가까이 대고 말씀해 주세요 🎤"
+                return "음성이 감지되지 않았습니다\n마이크를 길게 누르고 명확하게 말씀하세요 🎤"
             case "fr-FR":
-                return "Essayons à nouveau ! Maintenez le micro appuyé et parlez plus près de l'appareil 🎤"
+                return "Aucune voix détectée\nMaintenez le micro et parlez clairement 🎤"
             case "pt-PT":
-                return "Vamos tentar novamente! Mantenha pressionado o microfone e fale mais perto do dispositivo 🎤"
+                return "Nenhuma voz detectada\nMantenha pressionado o microfone e fale claramente 🎤"
             default:
-                return "Let's try that again! Please press and hold the microphone and speak a little closer to your device 🎤"
+                return "No speech detected\nPress & hold microphone and speak clearly 🎤"
             }
         case "recognition_error":
             switch language {
             case "zh-Hans":
-                return "抱歉，我没有听清楚。请按住麦克风，说慢一点，说得更清晰一些 🎤"
+                return "无法识别语音\n请长按麦克风，说得更清楚一些 🎤"
             case "ja-JP":
-                return "申し訳ありません、聞き取れませんでした。マイクを長押しして、もう少しゆっくり、はっきりと話してください 🎤"
+                return "音声を認識できませんでした\nマイクを長押しして、もう少しはっきりと話してください 🎤"
             case "es-ES":
-                return "Lo siento, no pude entender bien. Por favor, mantén presionado el micrófono y habla más despacio y claro 🎤"
+                return "Error de reconocimiento\nMantén presionado el micrófono y habla más claro 🎤"
             case "it-IT":
-                return "Mi dispiace, non ho capito bene. Per favore, tieni premuto il microfono e parla più lentamente e chiaramente 🎤"
+                return "Errore di riconoscimento\nTieni premuto il microfono e parla più chiaramente 🎤"
             case "ko-KR":
-                return "죄송합니다. 잘 알아듣지 못했어요. 마이크를 길게 누르고, 좀 더 천천히, 명확하게 말씀해 주시겠어요? 🎤"
+                return "음성 인식 오류\n마이크를 길게 누르고 더 명확하게 말씀하세요 🎤"
             case "fr-FR":
-                return "Désolé, je n'ai pas bien compris. Pourriez-vous maintenir le micro appuyé et parler plus lentement et plus clairement ? 🎤"
+                return "Erreur de reconnaissance\nMaintenez le micro et parlez plus clairement 🎤"
             case "pt-PT":
-                return "Desculpe, não entendi bem. Por favor, mantenha pressionado o microfone e fale mais devagar e claramente 🎤"
+                return "Erro de reconhecimento\nMantenha pressionado o microfone e fale mais claramente 🎤"
             default:
-                return "Sorry, I didn't catch that. Could you please press and hold the microphone and speak more slowly and clearly? 🎤"
+                return "Speech recognition error\nPress & hold microphone and speak more clearly 🎤"
             }
         default:
             return "An error occurred"

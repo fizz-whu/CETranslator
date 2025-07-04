@@ -44,7 +44,7 @@ struct TranslatorView: View {
         } else {
             // Add English fallback, dynamically fetched
             let englishFallbackText = SupportedLanguage.english.translationPlaceholderText
-            return "\(localizedText) (\(englishFallbackText))"
+            return "\(localizedText) | \(englishFallbackText)"
         }
     }
 
@@ -65,7 +65,7 @@ struct TranslatorView: View {
             let englishFormat = SupportedLanguage.english.tapAndHoldButtonPlaceholderFormat
             // Create the English version of the placeholder by inserting the *active* language name
             let englishFallbackText = String(format: englishFormat, activeLanguageName)
-            return "\(localizedPlaceholder) (\(englishFallbackText))"
+            return "\(localizedPlaceholder) | \(englishFallbackText)"
         }
     }
 
@@ -77,7 +77,7 @@ struct TranslatorView: View {
             return localizedLabel
         } else {
             let englishFallbackText = SupportedLanguage.english.tapAndHoldToSpeakLabelFormat // Directly use the English string
-            return "\(localizedLabel) (\(englishFallbackText))"
+            return "\(localizedLabel) | \(englishFallbackText)"
         }
     }
 
@@ -89,7 +89,7 @@ struct TranslatorView: View {
             return localizedLabel
         } else {
             let englishFallbackText = SupportedLanguage.english.tapAndHoldToSpeakLabelFormat // Directly use the English string
-            return "\(localizedLabel) (\(englishFallbackText))"
+            return "\(localizedLabel) | \(englishFallbackText)"
         }
     }
 
@@ -102,7 +102,7 @@ struct TranslatorView: View {
         } else {
             // Accesses the 'localizedTranslateWord' property from SupportedLanguage
             let localizedTranslateWord = sourceLanguage.localizedTranslateWord 
-            return "\(englishBaseText) (\(localizedTranslateWord))" // e.g., "Translate (翻译)"
+            return "\(englishBaseText) | \(localizedTranslateWord)" // e.g., "Translate | 翻译"
         }
     }
 
@@ -114,10 +114,30 @@ struct TranslatorView: View {
                 // Recognition result box - Dynamic placeholder with TextEditor
                 ZStack(alignment: .topLeading) {
                     if vm.recognizedText.isEmpty {
-                        Text(dynamicRecognitionPlaceholder)
-                            .foregroundColor(.secondary)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 8)
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Image(systemName: "mic.fill")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption)
+                                Text("Speech Input")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                HStack(spacing: 4) {
+                                    Image(systemName: "keyboard")
+                                        .foregroundColor(.secondary)
+                                        .font(.caption2)
+                                    Text("Tap to type")
+                                        .font(.system(size: 10))
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            Text("Speak or type your text here...")
+                                .foregroundColor(.secondary)
+                                .font(.system(size: 16))
+                        }
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 8)
                     }
                     TextEditor(text: $vm.recognizedText)
                         .frame(maxWidth: .infinity, minHeight: 100, maxHeight: 100)
@@ -184,12 +204,36 @@ struct TranslatorView: View {
                 }
 
                 // Translation result box
-                Text(translatedText.isEmpty ? dynamicTranslationPlaceholder : translatedText)
-                    .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading)
-                    .foregroundColor(translatedText.isEmpty ? .secondary : .primary) // Add this line
-                    .padding()
-                    .background(facebookCardBackground)
-                    .cornerRadius(10)
+                ZStack(alignment: .topLeading) {
+                    if translatedText.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Image(systemName: "textformat.alt")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption)
+                                Text("Translation Output")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                            }
+                            Text(dynamicTranslationPlaceholder)
+                                .foregroundColor(.secondary)
+                                .font(.system(size: 16))
+                        }
+                        .padding()
+                    }
+                    
+                    if !translatedText.isEmpty {
+                        Text(translatedText)
+                            .frame(maxWidth: .infinity, alignment: .topLeading)
+                            .foregroundColor(.primary)
+                            .padding()
+                            .font(.system(size: 16))
+                    }
+                }
+                .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading)
+                .background(facebookCardBackground)
+                .cornerRadius(10)
                     .overlay { // Existing overlay for ProgressView
                         if isTranslating {
                             HStack {
@@ -232,73 +276,126 @@ struct TranslatorView: View {
                     }
                     .padding(.horizontal)
 
-
-                Spacer()
+                Spacer(minLength: 20)
 
                 HStack(spacing: 40) {
-                    // Source Language Recording Button
-                    VStack {
-                        Button(action: {}) {
-                            Image(systemName: isRecordingSource ? "waveform.circle.fill" : "mic.circle.fill") // Filled icon for source
-                                .font(.system(size: 70)) // Slightly larger icon
-                                .foregroundStyle(isRecordingSource ? Color.red : facebookBlue) // Facebook blue for default
+                        // Source Language Recording Button
+                        VStack(spacing: 8) {
+                            ZStack {
+                                // Pulsing background for recording state
+                                Circle()
+                                    .fill(isRecordingSource ? Color.red.opacity(0.3) : Color.clear)
+                                    .frame(width: 90, height: 90)
+                                    .scaleEffect(isRecordingSource ? 1.2 : 1.0)
+                                    .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: isRecordingSource)
+                                    .opacity(isRecordingSource ? 1.0 : 0.0)
+                                
+                                VStack(spacing: 4) {
+                                    Button(action: {}) {
+                                        Image(systemName: isRecordingSource ? "waveform.circle.fill" : "mic.circle.fill") // Filled icon for source
+                                            .font(.system(size: 70)) // Slightly larger icon
+                                            .foregroundStyle(isRecordingSource ? Color.red : facebookBlue) // Facebook blue for default
+                                            .shadow(color: isRecordingSource ? Color.red.opacity(0.3) : Color.clear, radius: 10, x: 0, y: 0)
+                                    }
+                                    .buttonStyle(.bouncy)
+                                    .accessibilityLabel(leftMicrophoneButtonLabel) // Added for accessibility
+                                    .simultaneousGesture(
+                                        DragGesture(minimumDistance: 0)
+                                            .onChanged { _ in
+                                                if !isRecordingSource && !isRecordingTarget {
+                                                    isRecordingSource = true
+                                                    currentMode = .sourceToTarget
+                                                    resetState()
+                                                    vm.startRecording(sourceLanguage: sourceCode) // Use dynamic code
+                                                }
+                                            }
+                                            .onEnded { _ in
+                                                if isRecordingSource {
+                                                    isRecordingSource = false
+                                                    vm.stopRecording()
+                                                    handleRecordingEnd()
+                                                }
+                                            }
+                                    )
+                                    
+                                    // Press & Hold instruction directly under mic
+                                    Text(leftMicrophoneButtonLabel)
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.secondary)
+                                        .multilineTextAlignment(.center)
+                                        .lineLimit(2)
+                                        .padding(.horizontal, 4)
+                                }
+                            }
+                            
+                            // Language identifier
+                            HStack {
+                                Text(sourceLanguage.flagEmoji)
+                                    .font(.title2)
+                                Text(sourceName)
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(.primary)
+                            }
                         }
-                        .buttonStyle(.bouncy)
-                        .accessibilityLabel(leftMicrophoneButtonLabel) // Added for accessibility
-                        .simultaneousGesture(
-                            DragGesture(minimumDistance: 0)
-                                .onChanged { _ in
-                                    if !isRecordingSource && !isRecordingTarget {
-                                        isRecordingSource = true
-                                        currentMode = .sourceToTarget
-                                        resetState()
-                                        vm.startRecording(sourceLanguage: sourceCode) // Use dynamic code
-                                    }
-                                }
-                                .onEnded { _ in
-                                    if isRecordingSource {
-                                        isRecordingSource = false
-                                        vm.stopRecording()
-                                        handleRecordingEnd()
-                                    }
-                                }
-                        )
-                        Text("\(sourceName) → \(targetName)") // Dynamic label, using arrow
-                            .font(.caption)
-                            .foregroundColor(Color(.secondaryLabel)) // Softer text color
-                    }
 
-                    // Target Language Recording Button
-                    VStack {
-                        Button(action: {}) {
-                            Image(systemName: isRecordingTarget ? "waveform.circle.fill" : "mic.circle") // Outlined icon for target
-                                .font(.system(size: 70)) // Slightly larger icon
-                                .foregroundStyle(isRecordingTarget ? Color.red : facebookBlue) // Facebook blue for default
+                        // Target Language Recording Button
+                        VStack(spacing: 8) {
+                            ZStack {
+                                // Pulsing background for recording state
+                                Circle()
+                                    .fill(isRecordingTarget ? Color.red.opacity(0.3) : Color.clear)
+                                    .frame(width: 90, height: 90)
+                                    .scaleEffect(isRecordingTarget ? 1.2 : 1.0)
+                                    .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: isRecordingTarget)
+                                    .opacity(isRecordingTarget ? 1.0 : 0.0)
+                                
+                                VStack(spacing: 4) {
+                                    Button(action: {}) {
+                                        Image(systemName: isRecordingTarget ? "waveform.circle.fill" : "mic.circle") // Outlined icon for target
+                                            .font(.system(size: 70)) // Slightly larger icon
+                                            .foregroundStyle(isRecordingTarget ? Color.red : facebookBlue) // Facebook blue for default
+                                            .shadow(color: isRecordingTarget ? Color.red.opacity(0.3) : Color.clear, radius: 10, x: 0, y: 0)
+                                    }
+                                    .buttonStyle(.bouncy)
+                                    .accessibilityLabel(rightMicrophoneButtonLabel) // Added for accessibility
+                                    .simultaneousGesture(
+                                        DragGesture(minimumDistance: 0)
+                                            .onChanged { _ in
+                                                if !isRecordingTarget && !isRecordingSource {
+                                                    isRecordingTarget = true
+                                                    currentMode = .targetToSource
+                                                    resetState()
+                                                    vm.startRecording(sourceLanguage: targetCode) // Use dynamic code
+                                                }
+                                            }
+                                            .onEnded { _ in
+                                                if isRecordingTarget {
+                                                    isRecordingTarget = false
+                                                    vm.stopRecording()
+                                                    handleRecordingEnd()
+                                                }
+                                            }
+                                    )
+                                    
+                                    // Press & Hold instruction directly under mic
+                                    Text(rightMicrophoneButtonLabel)
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.secondary)
+                                        .multilineTextAlignment(.center)
+                                        .lineLimit(2)
+                                        .padding(.horizontal, 4)
+                                }
+                            }
+                            
+                            // Language identifier
+                            HStack {
+                                Text(targetLanguage.flagEmoji)
+                                    .font(.title2)
+                                Text(targetName)
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(.primary)
+                            }
                         }
-                        .buttonStyle(.bouncy)
-                        .accessibilityLabel(rightMicrophoneButtonLabel) // Added for accessibility
-                        .simultaneousGesture(
-                            DragGesture(minimumDistance: 0)
-                                .onChanged { _ in
-                                    if !isRecordingTarget && !isRecordingSource {
-                                        isRecordingTarget = true
-                                        currentMode = .targetToSource
-                                        resetState()
-                                        vm.startRecording(sourceLanguage: targetCode) // Use dynamic code
-                                    }
-                                }
-                                .onEnded { _ in
-                                    if isRecordingTarget {
-                                        isRecordingTarget = false
-                                        vm.stopRecording()
-                                        handleRecordingEnd()
-                                    }
-                                }
-                        )
-                        Text("\(targetName) → \(sourceName)") // Dynamic label, using arrow
-                            .font(.caption)
-                            .foregroundColor(Color(.secondaryLabel)) // Softer text color
-                    }
                 }
                 .padding(.bottom, 30) // Adjusted padding
             }
