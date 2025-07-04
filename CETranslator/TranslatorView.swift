@@ -315,6 +315,14 @@ struct TranslatorView: View {
                                 )
                             }
                             
+                            // Press & Hold instruction above language
+                            Text(leftMicrophoneButtonLabel)
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .lineLimit(2)
+                                .padding(.horizontal, 4)
+                            
                             // Language identifier
                             HStack {
                                 Text(sourceLanguage.flagEmoji)
@@ -323,14 +331,6 @@ struct TranslatorView: View {
                                     .font(.system(size: 14, weight: .medium))
                                     .foregroundColor(.primary)
                             }
-                            
-                            // Press & Hold instruction below language
-                            Text(leftMicrophoneButtonLabel)
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(.secondary)
-                                .multilineTextAlignment(.center)
-                                .lineLimit(2)
-                                .padding(.horizontal, 4)
                         }
 
                         // Target Language Recording Button
@@ -372,6 +372,14 @@ struct TranslatorView: View {
                                 )
                             }
                             
+                            // Press & Hold instruction above language
+                            Text(rightMicrophoneButtonLabel)
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .lineLimit(2)
+                                .padding(.horizontal, 4)
+                            
                             // Language identifier
                             HStack {
                                 Text(targetLanguage.flagEmoji)
@@ -380,14 +388,6 @@ struct TranslatorView: View {
                                     .font(.system(size: 14, weight: .medium))
                                     .foregroundColor(.primary)
                             }
-                            
-                            // Press & Hold instruction below language
-                            Text(rightMicrophoneButtonLabel)
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(.secondary)
-                                .multilineTextAlignment(.center)
-                                .lineLimit(2)
-                                .padding(.horizontal, 4)
                         }
                 }
                 .padding(.bottom, 30) // Adjusted padding
