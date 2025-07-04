@@ -37,14 +37,13 @@ struct TranslatorView: View {
 
     // Computed property for the dynamic translation placeholder text
     private var dynamicTranslationPlaceholder: String {
-        let localizedText = sourceLanguage.translationPlaceholderText // Text in sourceLanguage
-
-        if sourceLanguage == .english {
-            return localizedText // Already English
+        let sourceText = sourceLanguage.translationPlaceholderText
+        let targetText = targetLanguage.translationPlaceholderText
+        
+        if sourceLanguage == targetLanguage {
+            return sourceText
         } else {
-            // Add English fallback, dynamically fetched
-            let englishFallbackText = SupportedLanguage.english.translationPlaceholderText
-            return "\(localizedText) | \(englishFallbackText)"
+            return "\(sourceText) | \(targetText)"
         }
     }
 
@@ -52,69 +51,69 @@ struct TranslatorView: View {
     private var dynamicRecognitionPlaceholder: String {
         let activeLanguage = (currentMode == .sourceToTarget) ? sourceLanguage : targetLanguage
         let activeLanguageName = (currentMode == .sourceToTarget) ? sourceName : targetName
+        let fallbackLanguage = (currentMode == .sourceToTarget) ? targetLanguage : sourceLanguage
 
         // Get the localized format string from the active language
         let localizedFormat = activeLanguage.tapAndHoldButtonPlaceholderFormat
         // Create the localized placeholder by inserting the language name
         let localizedPlaceholder = String(format: localizedFormat, activeLanguageName)
 
-        if activeLanguage == .english {
+        if activeLanguage == fallbackLanguage {
             return localizedPlaceholder
         } else {
-            // For the English fallback, get the English format string
-            let englishFormat = SupportedLanguage.english.tapAndHoldButtonPlaceholderFormat
-            // Create the English version of the placeholder by inserting the *active* language name
-            let englishFallbackText = String(format: englishFormat, activeLanguageName)
-            return "\(localizedPlaceholder) | \(englishFallbackText)"
+            // For the fallback, get the fallback language format string
+            let fallbackFormat = fallbackLanguage.tapAndHoldButtonPlaceholderFormat
+            // Create the fallback version of the placeholder by inserting the *active* language name
+            let fallbackText = String(format: fallbackFormat, activeLanguageName)
+            return "\(localizedPlaceholder) | \(fallbackText)"
         }
     }
 
     // Computed property for the left microphone button label
     private var leftMicrophoneButtonLabel: String {
-        let localizedLabel = sourceLanguage.tapAndHoldToSpeakLabelFormat // Directly use the string
+        let sourceLabel = sourceLanguage.tapAndHoldToSpeakLabelFormat
+        let targetLabel = targetLanguage.tapAndHoldToSpeakLabelFormat
 
-        if sourceLanguage == .english {
-            return localizedLabel
+        if sourceLanguage == targetLanguage {
+            return sourceLabel
         } else {
-            let englishFallbackText = SupportedLanguage.english.tapAndHoldToSpeakLabelFormat // Directly use the English string
-            return "\(localizedLabel) | \(englishFallbackText)"
+            return "\(sourceLabel) | \(targetLabel)"
         }
     }
 
     // Computed property for the right microphone button label
     private var rightMicrophoneButtonLabel: String {
-        let localizedLabel = targetLanguage.tapAndHoldToSpeakLabelFormat // Directly use the string
+        let targetLabel = targetLanguage.tapAndHoldToSpeakLabelFormat
+        let sourceLabel = sourceLanguage.tapAndHoldToSpeakLabelFormat
 
-        if targetLanguage == .english {
-            return localizedLabel
+        if targetLanguage == sourceLanguage {
+            return targetLabel
         } else {
-            let englishFallbackText = SupportedLanguage.english.tapAndHoldToSpeakLabelFormat // Directly use the English string
-            return "\(localizedLabel) | \(englishFallbackText)"
+            return "\(targetLabel) | \(sourceLabel)"
         }
     }
 
     // Computed property for the dynamic translate button label
     private var translateButtonLabel: String {
-        let englishBaseText = "Translate"
-
-        if sourceLanguage == .english {
-            return englishBaseText // e.g., "Translate"
+        let sourceTranslateWord = sourceLanguage.localizedTranslateWord
+        let targetTranslateWord = targetLanguage.localizedTranslateWord
+        
+        if sourceLanguage == targetLanguage {
+            return sourceTranslateWord
         } else {
-            // Accesses the 'localizedTranslateWord' property from SupportedLanguage
-            let localizedTranslateWord = sourceLanguage.localizedTranslateWord 
-            return "\(englishBaseText) | \(localizedTranslateWord)" // e.g., "Translate | 翻译"
+            return "\(sourceTranslateWord) | \(targetTranslateWord)"
         }
     }
 
     // Computed property for the dual language "Speak or type" placeholder
     private var speakOrTypePlaceholder: String {
-        let localizedText = sourceLanguage.speakOrTypeHerePlaceholder
+        let sourceText = sourceLanguage.speakOrTypeHerePlaceholder
+        let targetText = targetLanguage.speakOrTypeHerePlaceholder
         
-        if sourceLanguage == .english {
-            return localizedText
+        if sourceLanguage == targetLanguage {
+            return sourceText
         } else {
-            let englishText = SupportedLanguage.english.speakOrTypeHerePlaceholder
-            return "\(localizedText) | \(englishText)"
+            return "\(sourceText) | \(targetText)"
         }
     }
 
