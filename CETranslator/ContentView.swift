@@ -10,6 +10,12 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
     case korean = "한국어"
     case french = "Français"
     case portuguese = "Português"
+    case arabic = "العربية"
+    case german = "Deutsch"
+    case hindi = "हिन्दी"
+    case russian = "Русский"
+    case thai = "ไทย"
+    case vietnamese = "Tiếng Việt"
 
     var id: String { self.rawValue }
 
@@ -24,6 +30,12 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .korean: return "🇰🇷"
         case .french: return "🇫🇷"
         case .portuguese: return "🇵🇹" // Or 🇧🇷 for Brazilian Portuguese
+        case .arabic: return "🇸🇦"
+        case .german: return "🇩🇪"
+        case .hindi: return "🇮🇳"
+        case .russian: return "🇷🇺"
+        case .thai: return "🇹🇭"
+        case .vietnamese: return "🇻🇳"
         }
     }
 
@@ -38,6 +50,12 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .korean: return "ko-KR"
         case .french: return "fr-FR"
         case .portuguese: return "pt-PT"
+        case .arabic: return "ar-SA"
+        case .german: return "de-DE"
+        case .hindi: return "hi-IN"
+        case .russian: return "ru-RU"
+        case .thai: return "th-TH"
+        case .vietnamese: return "vi-VN"
         }
     }
 
@@ -52,6 +70,12 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .korean: return "ko"
         case .french: return "fr"
         case .portuguese: return "pt"
+        case .arabic: return "ar"
+        case .german: return "de"
+        case .hindi: return "hi"
+        case .russian: return "ru"
+        case .thai: return "th"
+        case .vietnamese: return "vi"
         }
     }
 
@@ -66,6 +90,12 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .korean: return "번역 시작"
         case .french: return "Commencer la Traduction"
         case .portuguese: return "Iniciar Tradução"
+        case .arabic: return "بدء الترجمة"
+        case .german: return "Übersetzung starten"
+        case .hindi: return "अनुवाद शुरू करें"
+        case .russian: return "Начать перевод"
+        case .thai: return "เริ่มแปล"
+        case .vietnamese: return "Bắt đầu dịch"
         }
     }
 
@@ -80,6 +110,12 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .korean: return "언어 선택"
         case .french: return "Sélectionner la Langue"
         case .portuguese: return "Selecionar Idioma"
+        case .arabic: return "اختر اللغة"
+        case .german: return "Sprache auswählen"
+        case .hindi: return "भाषा चुनें"
+        case .russian: return "Выбрать язык"
+        case .thai: return "เลือกภาษา"
+        case .vietnamese: return "Chọn ngôn ngữ"
         }
     }
 
@@ -94,6 +130,12 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .korean: return "번역이 여기에 표시됩니다"
         case .french: return "La traduction apparaîtra ici"
         case .portuguese: return "A tradução aparecerá aqui"
+        case .arabic: return "ستظهر الترجمة هنا"
+        case .german: return "Die Übersetzung wird hier angezeigt"
+        case .hindi: return "अनुवाद यहाँ दिखेगा"
+        case .russian: return "Перевод появится здесь"
+        case .thai: return "การแปลจะปรากฏที่นี่"
+        case .vietnamese: return "Bản dịch sẽ xuất hiện ở đây"
         }
     }
 
@@ -109,6 +151,12 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .korean: return "마이크를 길게 눌러 말하세요 🎤"
         case .french: return "Maintenez le micro pour parler 🎤"
         case .portuguese: return "Pressione e segure o microfone para falar 🎤"
+        case .arabic: return "اضغط مع الاستمرار على الميكروفون للتحدث 🎤"
+        case .german: return "Mikrofon gedrückt halten zum Sprechen 🎤"
+        case .hindi: return "बोलने के लिए माइक्रोफ़ोन दबाए रखें 🎤"
+        case .russian: return "Удерживайте микрофон для речи 🎤"
+        case .thai: return "กดค้างไมโครโฟนเพื่อพูด 🎤"
+        case .vietnamese: return "Nhấn giữ micrô để nói 🎤"
         }
     }
 
@@ -124,6 +172,12 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .korean: return "길게 눌러 말하기"
         case .french: return "Maintenez pour parler"
         case .portuguese: return "Pressione e segure para falar"
+        case .arabic: return "اضغط مع الاستمرار للتحدث"
+        case .german: return "Gedrückt halten zum Sprechen"
+        case .hindi: return "बोलने के लिए दबाए रखें"
+        case .russian: return "Удерживайте для речи"
+        case .thai: return "กดค้างเพื่อพูด"
+        case .vietnamese: return "Nhấn giữ để nói"
         }
     }
 
@@ -146,6 +200,18 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
             return "Traduire" // Example for French
         case .portuguese:
             return "Traduzir" // Example for Portuguese
+        case .arabic:
+            return "ترجم"
+        case .german:
+            return "Übersetzen"
+        case .hindi:
+            return "अनुवाद करें"
+        case .russian:
+            return "Перевести"
+        case .thai:
+            return "แปล"
+        case .vietnamese:
+            return "Dịch"
         // Add cases for all your supported languages
         }
     }
@@ -169,6 +235,18 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
             return "Parlez ou tapez votre texte ici"
         case .portuguese:
             return "Fale ou digite seu texto aqui"
+        case .arabic:
+            return "تحدث أو اكتب نصك هنا"
+        case .german:
+            return "Sprechen oder Text hier eingeben"
+        case .hindi:
+            return "यहाँ बोलें या टेक्स्ट टाइप करें"
+        case .russian:
+            return "Говорите или вводите текст здесь"
+        case .thai:
+            return "พูดหรือพิมพ์ข้อความที่นี่"
+        case .vietnamese:
+            return "Nói hoặc nhập văn bản ở đây"
         }
     }
 }

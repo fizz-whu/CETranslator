@@ -456,6 +456,10 @@ struct TranslatorView: View {
         let hasChineseCharacters = text.range(of: "\\p{Script=Han}", options: .regularExpression) != nil
         let hasJapaneseCharacters = text.range(of: "\\p{Script=Hiragana}|\\p{Script=Katakana}", options: .regularExpression) != nil
         let hasKoreanCharacters = text.range(of: "\\p{Script=Hangul}", options: .regularExpression) != nil
+        let hasArabicCharacters = text.range(of: "\\p{Script=Arabic}", options: .regularExpression) != nil
+        let hasHindiCharacters = text.range(of: "\\p{Script=Devanagari}", options: .regularExpression) != nil
+        let hasCyrillicCharacters = text.range(of: "\\p{Script=Cyrillic}", options: .regularExpression) != nil
+        let hasThaiCharacters = text.range(of: "\\p{Script=Thai}", options: .regularExpression) != nil
         
         // Determine if text matches source or target language
         let textMatchesSource: Bool
@@ -468,9 +472,17 @@ struct TranslatorView: View {
             textMatchesSource = hasJapaneseCharacters
         case .korean:
             textMatchesSource = hasKoreanCharacters
+        case .arabic:
+            textMatchesSource = hasArabicCharacters
+        case .hindi:
+            textMatchesSource = hasHindiCharacters
+        case .russian:
+            textMatchesSource = hasCyrillicCharacters
+        case .thai:
+            textMatchesSource = hasThaiCharacters
         default:
-            // For non-CJK languages (English, Spanish, etc.), assume Latin characters
-            textMatchesSource = !hasChineseCharacters && !hasJapaneseCharacters && !hasKoreanCharacters
+            // For Latin script languages (English, Spanish, German, etc.), assume Latin characters
+            textMatchesSource = !hasChineseCharacters && !hasJapaneseCharacters && !hasKoreanCharacters && !hasArabicCharacters && !hasHindiCharacters && !hasCyrillicCharacters && !hasThaiCharacters
         }
         
         switch targetLanguage {
@@ -480,9 +492,17 @@ struct TranslatorView: View {
             textMatchesTarget = hasJapaneseCharacters
         case .korean:
             textMatchesTarget = hasKoreanCharacters
+        case .arabic:
+            textMatchesTarget = hasArabicCharacters
+        case .hindi:
+            textMatchesTarget = hasHindiCharacters
+        case .russian:
+            textMatchesTarget = hasCyrillicCharacters
+        case .thai:
+            textMatchesTarget = hasThaiCharacters
         default:
-            // For non-CJK languages (English, Spanish, etc.), assume Latin characters
-            textMatchesTarget = !hasChineseCharacters && !hasJapaneseCharacters && !hasKoreanCharacters
+            // For Latin script languages (English, Spanish, German, etc.), assume Latin characters
+            textMatchesTarget = !hasChineseCharacters && !hasJapaneseCharacters && !hasKoreanCharacters && !hasArabicCharacters && !hasHindiCharacters && !hasCyrillicCharacters && !hasThaiCharacters
         }
         
         // Set translation direction based on detected language

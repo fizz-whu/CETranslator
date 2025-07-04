@@ -18,6 +18,12 @@ final class SpeechTranslationViewModel: ObservableObject {
     private var speechRecognizerKO: SFSpeechRecognizer? // Added KO recognizer
     private var speechRecognizerFR: SFSpeechRecognizer? // Added FR recognizer
     private var speechRecognizerPT: SFSpeechRecognizer? // Added PT recognizer
+    private var speechRecognizerAR: SFSpeechRecognizer? // Added AR recognizer
+    private var speechRecognizerDE: SFSpeechRecognizer? // Added DE recognizer
+    private var speechRecognizerHI: SFSpeechRecognizer? // Added HI recognizer
+    private var speechRecognizerRU: SFSpeechRecognizer? // Added RU recognizer
+    private var speechRecognizerTH: SFSpeechRecognizer? // Added TH recognizer
+    private var speechRecognizerVI: SFSpeechRecognizer? // Added VI recognizer
 
     @Published var recognizedText: String = ""
     @Published var isRecording: Bool = false
@@ -33,6 +39,12 @@ final class SpeechTranslationViewModel: ObservableObject {
         speechRecognizerKO = SFSpeechRecognizer(locale: Locale(identifier: "ko-KR"))   // Initialize KO recognizer
         speechRecognizerFR = SFSpeechRecognizer(locale: Locale(identifier: "fr-FR"))   // Initialize FR recognizer
         speechRecognizerPT = SFSpeechRecognizer(locale: Locale(identifier: "pt-PT"))   // Initialize PT recognizer
+        speechRecognizerAR = SFSpeechRecognizer(locale: Locale(identifier: "ar-SA"))   // Initialize AR recognizer
+        speechRecognizerDE = SFSpeechRecognizer(locale: Locale(identifier: "de-DE"))   // Initialize DE recognizer
+        speechRecognizerHI = SFSpeechRecognizer(locale: Locale(identifier: "hi-IN"))   // Initialize HI recognizer
+        speechRecognizerRU = SFSpeechRecognizer(locale: Locale(identifier: "ru-RU"))   // Initialize RU recognizer
+        speechRecognizerTH = SFSpeechRecognizer(locale: Locale(identifier: "th-TH"))   // Initialize TH recognizer
+        speechRecognizerVI = SFSpeechRecognizer(locale: Locale(identifier: "vi-VN"))   // Initialize VI recognizer
         requestSpeechPermissions()
     }
 
@@ -66,6 +78,18 @@ final class SpeechTranslationViewModel: ObservableObject {
                 return "Aucune voix détectée\nMaintenez le micro et parlez clairement 🎤"
             case "pt-PT":
                 return "Nenhuma voz detectada\nMantenha pressionado o microfone e fale claramente 🎤"
+            case "ar-SA":
+                return "لم يتم اكتشاف صوت\nاضغط مع الاستمرار على الميكروفون وتحدث بوضوح 🎤"
+            case "de-DE":
+                return "Keine Sprache erkannt\nMikrofon gedrückt halten und deutlich sprechen 🎤"
+            case "hi-IN":
+                return "कोई आवाज़ नहीं मिली\nमाइक्रोफ़ोन दबाए रखें और साफ़ बोलें 🎤"
+            case "ru-RU":
+                return "Речь не обнаружена\nУдерживайте микрофон и говорите четко 🎤"
+            case "th-TH":
+                return "ไม่พบเสียงพูด\nกดค้างไมโครโฟนและพูดให้ชัดเจน 🎤"
+            case "vi-VN":
+                return "Không phát hiện giọng nói\nNhấn giữ micrô và nói rõ ràng 🎤"
             default:
                 return "No speech detected\nPress & hold microphone and speak clearly 🎤"
             }
@@ -85,6 +109,18 @@ final class SpeechTranslationViewModel: ObservableObject {
                 return "Erreur de reconnaissance\nMaintenez le micro et parlez plus clairement 🎤"
             case "pt-PT":
                 return "Erro de reconhecimento\nMantenha pressionado o microfone e fale mais claramente 🎤"
+            case "ar-SA":
+                return "خطأ في التعرف على الصوت\nاضغط مع الاستمرار على الميكروفون وتحدث بوضوح أكثر 🎤"
+            case "de-DE":
+                return "Spracherkennungsfehler\nMikrofon gedrückt halten und deutlicher sprechen 🎤"
+            case "hi-IN":
+                return "आवाज़ पहचानने में त्रुटि\nमाइक्रोफ़ोन दबाए रखें और अधिक स्पष्ट बोलें 🎤"
+            case "ru-RU":
+                return "Ошибка распознавания речи\nУдерживайте микрофон и говорите четче 🎤"
+            case "th-TH":
+                return "ข้อผิดพลาดในการรู้จำเสียง\nกดค้างไมโครโฟนและพูดให้ชัดเจนกว่านี้ 🎤"
+            case "vi-VN":
+                return "Lỗi nhận dạng giọng nói\nNhấn giữ micrô và nói rõ ràng hơn 🎤"
             default:
                 return "Speech recognition error\nPress & hold microphone and speak more clearly 🎤"
             }
@@ -117,6 +153,18 @@ final class SpeechTranslationViewModel: ObservableObject {
             recognizer = speechRecognizerFR
         case "pt-PT": // Add case for Portuguese
             recognizer = speechRecognizerPT
+        case "ar-SA": // Add case for Arabic
+            recognizer = speechRecognizerAR
+        case "de-DE": // Add case for German
+            recognizer = speechRecognizerDE
+        case "hi-IN": // Add case for Hindi
+            recognizer = speechRecognizerHI
+        case "ru-RU": // Add case for Russian
+            recognizer = speechRecognizerRU
+        case "th-TH": // Add case for Thai
+            recognizer = speechRecognizerTH
+        case "vi-VN": // Add case for Vietnamese
+            recognizer = speechRecognizerVI
         default:
             print("🔴 Unsupported language code: \(sourceLanguage)")
             recognizer = nil
