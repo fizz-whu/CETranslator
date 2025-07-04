@@ -106,6 +106,18 @@ struct TranslatorView: View {
         }
     }
 
+    // Computed property for the dual language "Speak or type" placeholder
+    private var speakOrTypePlaceholder: String {
+        let localizedText = sourceLanguage.speakOrTypeHerePlaceholder
+        
+        if sourceLanguage == .english {
+            return localizedText
+        } else {
+            let englishText = SupportedLanguage.english.speakOrTypeHerePlaceholder
+            return "\(localizedText) | \(englishText)"
+        }
+    }
+
     var body: some View {
         ZStack { // Added ZStack for background color
             facebookBackgroundGray.edgesIgnoringSafeArea(.all) // Facebook-style background
@@ -132,7 +144,7 @@ struct TranslatorView: View {
                                         .foregroundColor(.secondary)
                                 }
                             }
-                            Text("Speak or type your text here...")
+                            Text(speakOrTypePlaceholder)
                                 .foregroundColor(.secondary)
                                 .font(.system(size: 16))
                         }

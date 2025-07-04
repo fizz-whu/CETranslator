@@ -149,6 +149,28 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         // Add cases for all your supported languages
         }
     }
+    
+    // Text for "Speak or type your text here" placeholder
+    var speakOrTypeHerePlaceholder: String {
+        switch self {
+        case .chinese:
+            return "在此说话或输入文字"
+        case .english:
+            return "Speak or type your text here"
+        case .japanese:
+            return "ここに話すか入力してください"
+        case .spanish:
+            return "Habla o escribe tu texto aquí"
+        case .italian:
+            return "Parla o digita il tuo testo qui"
+        case .korean:
+            return "여기에 말하거나 입력하세요"
+        case .french:
+            return "Parlez ou tapez votre texte ici"
+        case .portuguese:
+            return "Fale ou digite seu texto aqui"
+        }
+    }
 }
 
 // Facebook-inspired colors
