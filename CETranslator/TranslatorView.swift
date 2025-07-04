@@ -158,7 +158,7 @@ struct TranslatorView: View {
                                     Spacer() // Pushes the button to the right
                                     Button(action: {
                                         print("Translate button tapped. Recognized text: '\(vm.recognizedText)'") // Debug
-                                        currentMode = .sourceToTarget
+                                        determineTranslationDirection(for: vm.recognizedText)
                                         textToTranslate = vm.recognizedText
                                         Task {
                                             print("Calling handleTranslation from button for: '\(textToTranslate)'") // Debug
@@ -192,7 +192,7 @@ struct TranslatorView: View {
                     print("Source input box (ZStack) tapped. Recognized text: '\(vm.recognizedText)' Is empty: \(vm.recognizedText.isEmpty)") // Debug
                     if !vm.recognizedText.isEmpty {
                         print("Text is not empty (ZStack tap). Proceeding with translation.") // Debug
-                        currentMode = .sourceToTarget
+                        determineTranslationDirection(for: vm.recognizedText)
                         textToTranslate = vm.recognizedText
                         Task {
                             print("Calling handleTranslation (ZStack tap) for: '\(textToTranslate)'") // Debug
@@ -437,6 +437,54 @@ struct TranslatorView: View {
          }, message: {
              Text(vm.errorMessage ?? "An unknown error occurred.")
          })
+    }
+
+    private func determineTranslationDirection(for text: String) {
+        // Simple language detection based on character types
+        let hasChineseCharacters = text.range(of: "\\p{Script=Han}", options: .regularExpression) != nil
+        let hasJapaneseCharacters = text.range(of: "\\p{Script=Hiragana}|\\p{Script=Katakana}", options: .regularExpression) != nil
+        let hasKoreanCharacters = text.range(of: "\\p{Script=Hangul}", options: .regularExpression) != nil
+        
+        // Determine if text matches source or target language
+        let textMatchesSource: Bool
+        let textMatchesTarget: Bool
+        
+        switch sourceLanguage {
+        case .chinese:
+            textMatchesSource = hasChineseCharacters
+        case .japanese:
+            textMatchesSource = hasJapaneseCharacters
+        case .korean:
+            textMatchesSource = hasKoreanCharacters
+        default:
+            // For non-CJK languages (English, Spanish, etc.), assume Latin characters
+            textMatchesSource = !hasChineseCharacters && !hasJapaneseCharacters && !hasKoreanCharacters
+        }
+        
+        switch targetLanguage {
+        case .chinese:
+            textMatchesTarget = hasChineseCharacters
+        case .japanese:
+            textMatchesTarget = hasJapaneseCharacters
+        case .korean:
+            textMatchesTarget = hasKoreanCharacters
+        default:
+            // For non-CJK languages (English, Spanish, etc.), assume Latin characters
+            textMatchesTarget = !hasChineseCharacters && !hasJapaneseCharacters && !hasKoreanCharacters
+        }
+        
+        // Set translation direction based on detected language
+        if textMatchesSource && !textMatchesTarget {
+            currentMode = .sourceToTarget
+            print("🔍 Detected text matches source language (\(sourceName)) → translating to \(targetName)")
+        } else if textMatchesTarget && !textMatchesSource {
+            currentMode = .targetToSource
+            print("🔍 Detected text matches target language (\(targetName)) → translating to \(sourceName)")
+        } else {
+            // Default to source → target if detection is unclear
+            currentMode = .sourceToTarget
+            print("🔍 Language detection unclear, defaulting to \(sourceName) → \(targetName)")
+        }
     }
 
     private func resetState() {
