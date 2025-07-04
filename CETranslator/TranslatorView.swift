@@ -71,26 +71,12 @@ struct TranslatorView: View {
 
     // Computed property for the left microphone button label
     private var leftMicrophoneButtonLabel: String {
-        let sourceLabel = sourceLanguage.tapAndHoldToSpeakLabelFormat
-        let targetLabel = targetLanguage.tapAndHoldToSpeakLabelFormat
-
-        if sourceLanguage == targetLanguage {
-            return sourceLabel
-        } else {
-            return "\(sourceLabel) | \(targetLabel)"
-        }
+        return sourceLanguage.tapAndHoldToSpeakLabelFormat
     }
 
     // Computed property for the right microphone button label
     private var rightMicrophoneButtonLabel: String {
-        let targetLabel = targetLanguage.tapAndHoldToSpeakLabelFormat
-        let sourceLabel = sourceLanguage.tapAndHoldToSpeakLabelFormat
-
-        if targetLanguage == sourceLanguage {
-            return targetLabel
-        } else {
-            return "\(targetLabel) | \(sourceLabel)"
-        }
+        return targetLanguage.tapAndHoldToSpeakLabelFormat
     }
 
     // Computed property for the dynamic translate button label
@@ -295,7 +281,7 @@ struct TranslatorView: View {
                             ZStack {
                                 // Pulsing background for recording state
                                 Circle()
-                                    .fill(isRecordingSource ? Color.red.opacity(0.3) : Color.clear)
+                                    .fill(isRecordingSource ? Color.blue.opacity(0.3) : Color.clear)
                                     .frame(width: 90, height: 90)
                                     .scaleEffect(isRecordingSource ? 1.2 : 1.0)
                                     .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: isRecordingSource)
@@ -305,8 +291,8 @@ struct TranslatorView: View {
                                     Button(action: {}) {
                                         Image(systemName: isRecordingSource ? "waveform.circle.fill" : "mic.circle.fill") // Filled icon for source
                                             .font(.system(size: 70)) // Slightly larger icon
-                                            .foregroundStyle(isRecordingSource ? Color.red : facebookBlue) // Facebook blue for default
-                                            .shadow(color: isRecordingSource ? Color.red.opacity(0.3) : Color.clear, radius: 10, x: 0, y: 0)
+                                            .foregroundStyle(isRecordingSource ? Color.blue : facebookBlue) // Light blue when recording
+                                            .shadow(color: isRecordingSource ? Color.blue.opacity(0.3) : Color.clear, radius: 10, x: 0, y: 0)
                                     }
                                     .buttonStyle(.bouncy)
                                     .accessibilityLabel(leftMicrophoneButtonLabel) // Added for accessibility
@@ -354,7 +340,7 @@ struct TranslatorView: View {
                             ZStack {
                                 // Pulsing background for recording state
                                 Circle()
-                                    .fill(isRecordingTarget ? Color.red.opacity(0.3) : Color.clear)
+                                    .fill(isRecordingTarget ? Color.blue.opacity(0.3) : Color.clear)
                                     .frame(width: 90, height: 90)
                                     .scaleEffect(isRecordingTarget ? 1.2 : 1.0)
                                     .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: isRecordingTarget)
@@ -364,8 +350,8 @@ struct TranslatorView: View {
                                     Button(action: {}) {
                                         Image(systemName: isRecordingTarget ? "waveform.circle.fill" : "mic.circle") // Outlined icon for target
                                             .font(.system(size: 70)) // Slightly larger icon
-                                            .foregroundStyle(isRecordingTarget ? Color.red : facebookBlue) // Facebook blue for default
-                                            .shadow(color: isRecordingTarget ? Color.red.opacity(0.3) : Color.clear, radius: 10, x: 0, y: 0)
+                                            .foregroundStyle(isRecordingTarget ? Color.blue : facebookBlue) // Light blue when recording
+                                            .shadow(color: isRecordingTarget ? Color.blue.opacity(0.3) : Color.clear, radius: 10, x: 0, y: 0)
                                     }
                                     .buttonStyle(.bouncy)
                                     .accessibilityLabel(rightMicrophoneButtonLabel) // Added for accessibility
