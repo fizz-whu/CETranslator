@@ -287,42 +287,32 @@ struct TranslatorView: View {
                                     .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: isRecordingSource)
                                     .opacity(isRecordingSource ? 1.0 : 0.0)
                                 
-                                VStack(spacing: 4) {
-                                    Button(action: {}) {
-                                        Image(systemName: isRecordingSource ? "waveform.circle.fill" : "mic.circle.fill") // Filled icon for source
-                                            .font(.system(size: 70)) // Slightly larger icon
-                                            .foregroundStyle(isRecordingSource ? Color.blue : facebookBlue) // Light blue when recording
-                                            .shadow(color: isRecordingSource ? Color.blue.opacity(0.3) : Color.clear, radius: 10, x: 0, y: 0)
-                                    }
-                                    .buttonStyle(.bouncy)
-                                    .accessibilityLabel(leftMicrophoneButtonLabel) // Added for accessibility
-                                    .simultaneousGesture(
-                                        DragGesture(minimumDistance: 0)
-                                            .onChanged { _ in
-                                                if !isRecordingSource && !isRecordingTarget {
-                                                    isRecordingSource = true
-                                                    currentMode = .sourceToTarget
-                                                    resetState()
-                                                    vm.startRecording(sourceLanguage: sourceCode) // Use dynamic code
-                                                }
-                                            }
-                                            .onEnded { _ in
-                                                if isRecordingSource {
-                                                    isRecordingSource = false
-                                                    vm.stopRecording()
-                                                    handleRecordingEnd()
-                                                }
-                                            }
-                                    )
-                                    
-                                    // Press & Hold instruction directly under mic
-                                    Text(leftMicrophoneButtonLabel)
-                                        .font(.system(size: 12, weight: .medium))
-                                        .foregroundColor(.secondary)
-                                        .multilineTextAlignment(.center)
-                                        .lineLimit(2)
-                                        .padding(.horizontal, 4)
+                                Button(action: {}) {
+                                    Image(systemName: isRecordingSource ? "waveform.circle.fill" : "mic.circle.fill") // Filled icon for source
+                                        .font(.system(size: 70)) // Slightly larger icon
+                                        .foregroundStyle(isRecordingSource ? Color.blue : facebookBlue) // Light blue when recording
+                                        .shadow(color: isRecordingSource ? Color.blue.opacity(0.3) : Color.clear, radius: 10, x: 0, y: 0)
                                 }
+                                .buttonStyle(.bouncy)
+                                .accessibilityLabel(leftMicrophoneButtonLabel) // Added for accessibility
+                                .simultaneousGesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { _ in
+                                            if !isRecordingSource && !isRecordingTarget {
+                                                isRecordingSource = true
+                                                currentMode = .sourceToTarget
+                                                resetState()
+                                                vm.startRecording(sourceLanguage: sourceCode) // Use dynamic code
+                                            }
+                                        }
+                                        .onEnded { _ in
+                                            if isRecordingSource {
+                                                isRecordingSource = false
+                                                vm.stopRecording()
+                                                handleRecordingEnd()
+                                            }
+                                        }
+                                )
                             }
                             
                             // Language identifier
@@ -333,6 +323,14 @@ struct TranslatorView: View {
                                     .font(.system(size: 14, weight: .medium))
                                     .foregroundColor(.primary)
                             }
+                            
+                            // Press & Hold instruction below language
+                            Text(leftMicrophoneButtonLabel)
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .lineLimit(2)
+                                .padding(.horizontal, 4)
                         }
 
                         // Target Language Recording Button
@@ -346,42 +344,32 @@ struct TranslatorView: View {
                                     .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: isRecordingTarget)
                                     .opacity(isRecordingTarget ? 1.0 : 0.0)
                                 
-                                VStack(spacing: 4) {
-                                    Button(action: {}) {
-                                        Image(systemName: isRecordingTarget ? "waveform.circle.fill" : "mic.circle") // Outlined icon for target
-                                            .font(.system(size: 70)) // Slightly larger icon
-                                            .foregroundStyle(isRecordingTarget ? Color.blue : facebookBlue) // Light blue when recording
-                                            .shadow(color: isRecordingTarget ? Color.blue.opacity(0.3) : Color.clear, radius: 10, x: 0, y: 0)
-                                    }
-                                    .buttonStyle(.bouncy)
-                                    .accessibilityLabel(rightMicrophoneButtonLabel) // Added for accessibility
-                                    .simultaneousGesture(
-                                        DragGesture(minimumDistance: 0)
-                                            .onChanged { _ in
-                                                if !isRecordingTarget && !isRecordingSource {
-                                                    isRecordingTarget = true
-                                                    currentMode = .targetToSource
-                                                    resetState()
-                                                    vm.startRecording(sourceLanguage: targetCode) // Use dynamic code
-                                                }
-                                            }
-                                            .onEnded { _ in
-                                                if isRecordingTarget {
-                                                    isRecordingTarget = false
-                                                    vm.stopRecording()
-                                                    handleRecordingEnd()
-                                                }
-                                            }
-                                    )
-                                    
-                                    // Press & Hold instruction directly under mic
-                                    Text(rightMicrophoneButtonLabel)
-                                        .font(.system(size: 12, weight: .medium))
-                                        .foregroundColor(.secondary)
-                                        .multilineTextAlignment(.center)
-                                        .lineLimit(2)
-                                        .padding(.horizontal, 4)
+                                Button(action: {}) {
+                                    Image(systemName: isRecordingTarget ? "waveform.circle.fill" : "mic.circle") // Outlined icon for target
+                                        .font(.system(size: 70)) // Slightly larger icon
+                                        .foregroundStyle(isRecordingTarget ? Color.blue : facebookBlue) // Light blue when recording
+                                        .shadow(color: isRecordingTarget ? Color.blue.opacity(0.3) : Color.clear, radius: 10, x: 0, y: 0)
                                 }
+                                .buttonStyle(.bouncy)
+                                .accessibilityLabel(rightMicrophoneButtonLabel) // Added for accessibility
+                                .simultaneousGesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { _ in
+                                            if !isRecordingTarget && !isRecordingSource {
+                                                isRecordingTarget = true
+                                                currentMode = .targetToSource
+                                                resetState()
+                                                vm.startRecording(sourceLanguage: targetCode) // Use dynamic code
+                                            }
+                                        }
+                                        .onEnded { _ in
+                                            if isRecordingTarget {
+                                                isRecordingTarget = false
+                                                vm.stopRecording()
+                                                handleRecordingEnd()
+                                            }
+                                        }
+                                )
                             }
                             
                             // Language identifier
@@ -392,6 +380,14 @@ struct TranslatorView: View {
                                     .font(.system(size: 14, weight: .medium))
                                     .foregroundColor(.primary)
                             }
+                            
+                            // Press & Hold instruction below language
+                            Text(rightMicrophoneButtonLabel)
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .lineLimit(2)
+                                .padding(.horizontal, 4)
                         }
                 }
                 .padding(.bottom, 30) // Adjusted padding
