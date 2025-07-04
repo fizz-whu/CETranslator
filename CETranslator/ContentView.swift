@@ -185,68 +185,68 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
     var localizedTranslateWord: String {
         switch self {
         case .english:
-            return "Translate" // For English, it's just "Translate"
+            return "Go" // Short version for English
         case .chinese:
-            return "翻译" // Example for Chinese
+            return "译" // Short version for Chinese
         case .spanish:
-            return "Traducir" // Example for Spanish
+            return "Ir" // Short version for Spanish
         case .japanese:
-            return "翻訳" // Example for Japanese
+            return "訳" // Short version for Japanese
         case .italian:
-            return "Traduci" // Example for Italian
+            return "Vai" // Short version for Italian
         case .korean:
-            return "번역" // Example for Korean
+            return "역" // Short version for Korean
         case .french:
-            return "Traduire" // Example for French
+            return "Go" // Short version for French
         case .portuguese:
-            return "Traduzir" // Example for Portuguese
+            return "Ir" // Short version for Portuguese
         case .arabic:
-            return "ترجم"
+            return "ترجم" // Keep as is (already short)
         case .german:
-            return "Übersetzen"
+            return "Los" // Short version for German
         case .hindi:
-            return "अनुवाद करें"
+            return "चलो" // Short version for Hindi
         case .russian:
-            return "Перевести"
+            return "Иди" // Short version for Russian
         case .thai:
-            return "แปล"
+            return "แปล" // Keep as is (already short)
         case .vietnamese:
-            return "Dịch"
+            return "Đi" // Short version for Vietnamese
         // Add cases for all your supported languages
         }
     }
     
-    // Text for "Speak or type your text here" placeholder
+    // Text for "Typing option is available as well" placeholder
     var speakOrTypeHerePlaceholder: String {
         switch self {
         case .chinese:
-            return "在此说话或输入文字"
+            return "也可以打字输入"
         case .english:
-            return "Speak or type your text here"
+            return "Typing option is available as well"
         case .japanese:
-            return "ここに話すか入力してください"
+            return "タイピングオプションもあります"
         case .spanish:
-            return "Habla o escribe tu texto aquí"
+            return "La opción de escribir también está disponible"
         case .italian:
-            return "Parla o digita il tuo testo qui"
+            return "È disponibile anche l'opzione di digitazione"
         case .korean:
-            return "여기에 말하거나 입력하세요"
+            return "타이핑 옵션도 사용 가능합니다"
         case .french:
-            return "Parlez ou tapez votre texte ici"
+            return "L'option de frappe est également disponible"
         case .portuguese:
-            return "Fale ou digite seu texto aqui"
+            return "A opção de digitação também está disponível"
         case .arabic:
-            return "تحدث أو اكتب نصك هنا"
+            return "خيار الكتابة متاح أيضاً"
         case .german:
-            return "Sprechen oder Text hier eingeben"
+            return "Die Tippoption ist ebenfalls verfügbar"
         case .hindi:
-            return "यहाँ बोलें या टेक्स्ट टाइप करें"
+            return "टाइपिंग विकल्प भी उपलब्ध है"
         case .russian:
-            return "Говорите или вводите текст здесь"
+            return "Опция набора текста также доступна"
         case .thai:
-            return "พูดหรือพิมพ์ข้อความที่นี่"
+            return "ตัวเลือกการพิมพ์ก็มีให้ใช้งานด้วย"
         case .vietnamese:
-            return "Nói hoặc nhập văn bản ở đây"
+            return "Tùy chọn gõ phím cũng có sẵn"
         }
     }
 }

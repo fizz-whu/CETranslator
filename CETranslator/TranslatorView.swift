@@ -397,7 +397,7 @@ struct TranslatorView: View {
                 .padding(.bottom, 30) // Adjusted padding
             }
         }
-        .navigationTitle(currentMode == .sourceToTarget ? "\(sourceName) → \(targetName)" : "\(targetName) → \(sourceName)")
+        .navigationTitle(currentMode == .sourceToTarget ? "\(sourceName) ↔ \(targetName)" : "\(targetName) ↔ \(sourceName)")
         .navigationBarTitleDisplayMode(.inline) // Consistent with ContentView
         .toolbarBackground(facebookCardBackground, for: .navigationBar) // Facebook-style nav bar
         .toolbarBackground(.visible, for: .navigationBar) // Ensure nav bar background is visible
