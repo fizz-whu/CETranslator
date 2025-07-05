@@ -133,6 +133,9 @@ final class SpeechTranslationViewModel: ObservableObject {
         isRecording = true
         recognizedText = ""
         errorMessage = nil // Clear previous errors at the start
+        
+        print("🎤 Starting recording for \(sourceLanguage)")
+        print("🧹 Cleared previous state - recognizedText: '\(recognizedText)', errorMessage: \(errorMessage?.description ?? "nil")")
 
         // Select the correct recognizer based on sourceLanguage
         let recognizer: SFSpeechRecognizer?
@@ -238,23 +241,58 @@ final class SpeechTranslationViewModel: ObservableObject {
             if let error = error {
                 let nsError = error as NSError
                 print("🔴 Recognition error for \(sourceLanguage): \(error.localizedDescription), Code: \(nsError.code), Domain: \(nsError.domain)")
+                
+                // Only show "no speech detected" error if we truly have no speech AND we're still recording
                 DispatchQueue.main.async {
-                    if nsError.domain == "kAFAssistantErrorDomain" && nsError.code == 1110 {
-                        self.errorMessage = self.getLocalizedErrorMessage(for: "no_speech_detected", language: sourceLanguage)
-                    } else {
-                        self.errorMessage = self.getLocalizedErrorMessage(for: "recognition_error", language: sourceLanguage)
+                    // Don't show error if we already have recognized text (speech was detected)
+                    if !self.recognizedText.isEmpty {
+                        print("📝 Ignoring error because we already have recognized text: '\(self.recognizedText)'")
+                        return
+                    }
+                    
+                    // Only show errors for actual problems, not normal completion
+                    switch nsError.code {
+                    case 1110: // No speech detected - only show if no text was recognized
+                        if self.recognizedText.isEmpty && self.isRecording {
+                            self.errorMessage = self.getLocalizedErrorMessage(for: "no_speech_detected", language: sourceLanguage)
+                        }
+                    case 216: // Recognition service unavailable
+                        self.errorMessage = "Speech recognition service unavailable. Please check your internet connection."
+                    case 301: // Audio recording problem
+                        self.errorMessage = "Audio recording problem. Please check microphone permissions."
+                    case 1107: // Connection was interrupted
+                        if self.recognizedText.isEmpty {
+                            self.errorMessage = "Connection interrupted. Please try again."
+                        }
+                    case 203, 209: // Normal completion codes - don't show errors
+                        print("📝 Normal recognition completion, not showing error")
+                    default:
+                        if self.recognizedText.isEmpty {
+                            self.errorMessage = self.getLocalizedErrorMessage(for: "recognition_error", language: sourceLanguage)
+                        }
+                    }
+                    self.isRecording = false
+                }
+                
+                // Clean up resources safely
+                if self.audioEngine.isRunning {
+                    self.audioEngine.stop()
+                    do {
+                        self.audioEngine.inputNode.removeTap(onBus: 0)
+                    } catch {
+                        print("⚠️ Error removing audio tap during error cleanup: \(error.localizedDescription)")
                     }
                 }
-                self.audioEngine.stop()
-                self.audioEngine.inputNode.removeTap(onBus: 0)
                 self.recognitionRequest?.endAudio()
-                self.isRecording = false
                 self.recognitionTask = nil
                 self.recognitionRequest = nil
                 return
             }
     
-            guard let result = result else { return }
+            guard let result = result else { 
+                print("⚠️ Received nil result without error")
+                return 
+            }
     
             DispatchQueue.main.async {
                 let newText = result.bestTranscription.formattedString
@@ -262,39 +300,65 @@ final class SpeechTranslationViewModel: ObservableObject {
                     self.recognizedText = newText
                     print("👂 Recognized (\(sourceLanguage)): \(self.recognizedText)")
                 }
-                self.errorMessage = nil // Clear error on successful partial or final result
+                
+                // Clear any previous error messages when we get successful recognition
+                if !newText.isEmpty {
+                    self.errorMessage = nil
+                }
     
                 if result.isFinal {
                     print("✅ Final recognition result (\(sourceLanguage)): \(self.recognizedText)")
+                    // Don't auto-cleanup on final result, let user manually stop
+                    self.isRecording = false
                 }
             }
         }
     }
 
     func stopRecording() {
+        // Cancel recognition task first to prevent callbacks
+        if let task = recognitionTask {
+            task.cancel()
+            recognitionTask = nil
+            print("🏁 Recognition task cancelled.")
+        }
+        
+        // Clean up audio engine safely
         if audioEngine.isRunning {
             audioEngine.stop()
-            audioEngine.inputNode.removeTap(onBus: 0)
-            recognitionRequest?.endAudio()
-            print("🛑 Audio engine stopped.")
+            
+            // Remove tap safely with error handling
+            do {
+                audioEngine.inputNode.removeTap(onBus: 0)
+                print("🛑 Audio engine stopped and tap removed.")
+            } catch {
+                print("⚠️ Error removing audio tap: \(error.localizedDescription)")
+            }
         } else {
             print("⚠️ Audio engine was not running.")
         }
 
-        if recognitionTask != nil {
-            recognitionTask?.finish()
-            recognitionTask = nil
-            print("🏁 Recognition task finished.")
-        } else {
-            print("⚠️ Recognition task was already nil.")
-        }
-        
+        // End audio request
+        recognitionRequest?.endAudio()
         recognitionRequest = nil
+        
+        // Clean up audio session
+        do {
+            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+            print("🔊 Audio session deactivated.")
+        } catch {
+            print("⚠️ Error deactivating audio session: \(error.localizedDescription)")
+        }
 
-        if isRecording {
-            DispatchQueue.main.async {
-                self.isRecording = false
-                print("🎙 Recording stopped state updated. Final text: \(self.recognizedText)")
+        // Update recording state on main thread
+        DispatchQueue.main.async {
+            self.isRecording = false
+            // Clear error message if we have recognized text (successful recording)
+            if !self.recognizedText.isEmpty {
+                self.errorMessage = nil
+                print("🎙 Recording stopped successfully with text: '\(self.recognizedText)'")
+            } else {
+                print("🎙 Recording stopped with no recognized text")
             }
         }
     }

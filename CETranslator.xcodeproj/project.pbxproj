@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		ECA154752D9B6DD400B88136 /* LLM in Frameworks */ = {isa = PBXBuildFile; productRef = ECA154742D9B6DD400B88136 /* LLM */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,7 +55,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ECA154752D9B6DD400B88136 /* LLM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,7 +123,6 @@
 			);
 			name = CETranslator;
 			packageProductDependencies = (
-				ECA154742D9B6DD400B88136 /* LLM */,
 			);
 			productName = CETranslator;
 			productReference = ECA154312D97A09A00B88136 /* CETranslator.app */;
@@ -210,8 +207,6 @@
 			mainGroup = ECA154282D97A09A00B88136;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				ECA154612D98D05400B88136 /* XCRemoteSwiftPackageReference "LLM" */,
-				ECD158E02DC0718D00C4A396 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = ECA154322D97A09A00B88136 /* Products */;
@@ -417,7 +412,7 @@
 				DEVELOPMENT_TEAM = 6XSHPNT7JW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Need microphone to get the voice input for translation";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Need speech recognition to get the content of the voice for translation";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -449,7 +444,7 @@
 				DEVELOPMENT_TEAM = 6XSHPNT7JW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Need microphone to get the voice input for translation";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Need speech recognition to get the content of the voice for translation";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -580,30 +575,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		ECA154612D98D05400B88136 /* XCRemoteSwiftPackageReference "LLM" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/eastriverlee/LLM.swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.4.3;
-			};
-		};
-		ECD158E02DC0718D00C4A396 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/d-date/google-mlkit-swiftpm";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		ECA154742D9B6DD400B88136 /* LLM */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = ECA154612D98D05400B88136 /* XCRemoteSwiftPackageReference "LLM" */;
-			productName = LLM;
-		};
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = ECA154292D97A09A00B88136 /* Project object */;
