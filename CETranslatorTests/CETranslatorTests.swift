@@ -6,8 +6,6 @@
 //
 
 import Testing
-import Speech
-import AVFoundation
 @testable import CETranslator
 
 struct CETranslatorTests {

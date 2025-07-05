@@ -23,12 +23,13 @@ final class CETranslatorUITests: XCTestCase {
     }
 
     @MainActor
-    func testExample() throws {
+    func testAppLaunchesSuccessfully() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        // Verify the app launches and main UI elements are present
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'Translation'")).firstMatch.waitForExistence(timeout: 5))
     }
 
     @MainActor

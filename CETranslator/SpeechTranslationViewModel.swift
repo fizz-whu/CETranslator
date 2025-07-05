@@ -4,7 +4,7 @@ import AVFoundation
 import SwiftUI
 import Translation
 
-final class SpeechTranslationViewModel: ObservableObject {
+final class SpeechTranslationViewModel: ObservableObject, @unchecked Sendable {
     // MARK: - Speech Recognition
     private let audioEngine = AVAudioEngine()
     private var recognitionTask: SFSpeechRecognitionTask?
@@ -49,15 +49,19 @@ final class SpeechTranslationViewModel: ObservableObject {
     }
 
     private func requestSpeechPermissions() {
-        SFSpeechRecognizer.requestAuthorization { status in
+        SFSpeechRecognizer.requestAuthorization { [weak self] status in
             DispatchQueue.main.async {
                 if status != .authorized {
-                    self.errorMessage = NSLocalizedString("speech_recognition_not_authorized", 
+                    self?.errorMessage = NSLocalizedString("speech_recognition_not_authorized", 
                         comment: "Please enable microphone access in Settings to use voice recognition")
                 }
             }
         }
-        AVAudioSession.sharedInstance().requestRecordPermission { _ in }
+        if #available(iOS 17.0, *) {
+            AVAudioApplication.requestRecordPermission { _ in }
+        } else {
+            AVAudioSession.sharedInstance().requestRecordPermission { _ in }
+        }
     }
 
     private func getLocalizedErrorMessage(for errorType: String, language: String) -> String {
@@ -277,11 +281,8 @@ final class SpeechTranslationViewModel: ObservableObject {
                 // Clean up resources safely
                 if self.audioEngine.isRunning {
                     self.audioEngine.stop()
-                    do {
-                        self.audioEngine.inputNode.removeTap(onBus: 0)
-                    } catch {
-                        print("⚠️ Error removing audio tap during error cleanup: \(error.localizedDescription)")
-                    }
+                    self.audioEngine.inputNode.removeTap(onBus: 0)
+                    print("🛑 Audio engine stopped and tap removed during error cleanup.")
                 }
                 self.recognitionRequest?.endAudio()
                 self.recognitionTask = nil
@@ -326,14 +327,8 @@ final class SpeechTranslationViewModel: ObservableObject {
         // Clean up audio engine safely
         if audioEngine.isRunning {
             audioEngine.stop()
-            
-            // Remove tap safely with error handling
-            do {
-                audioEngine.inputNode.removeTap(onBus: 0)
-                print("🛑 Audio engine stopped and tap removed.")
-            } catch {
-                print("⚠️ Error removing audio tap: \(error.localizedDescription)")
-            }
+            audioEngine.inputNode.removeTap(onBus: 0)
+            print("🛑 Audio engine stopped and tap removed.")
         } else {
             print("⚠️ Audio engine was not running.")
         }
@@ -377,9 +372,9 @@ final class SpeechTranslationViewModel: ObservableObject {
             }
         case .denied, .restricted:
             DispatchQueue.main.async {
-                 self.errorMessage = NSLocalizedString("speech_permission_denied_or_restricted_check_settings", 
-                     comment: "Voice recognition is disabled. Please enable it in your device Settings")
-             }
+                self.errorMessage = NSLocalizedString("speech_permission_denied_or_restricted_check_settings", 
+                    comment: "Voice recognition is disabled. Please enable it in your device Settings")
+            }
             return false
         @unknown default:
             DispatchQueue.main.async {
