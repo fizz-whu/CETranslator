@@ -292,7 +292,7 @@ final class SpeechTranslationViewModel: ObservableObject {
         recognitionRequest = nil
 
         if isRecording {
-            DispatchQueue.main.async {
+            DispatchQueue.mai+n.async {
                 self.isRecording = false
                 print("🎙 Recording stopped state updated. Final text: \(self.recognizedText)")
             }

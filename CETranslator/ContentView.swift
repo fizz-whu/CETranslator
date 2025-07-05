@@ -321,22 +321,19 @@ struct ContentView: View {
 
     // Computed property for the button's display text
     private var startTranslationButtonDisplayText: String {
-        let localizedText = sourceLanguage.startTranslationButtonText
-        if sourceLanguage == .english {
-            return localizedText
+        if sourceLanguage == targetLanguage {
+            return sourceLanguage.startTranslationButtonText
         } else {
-            // Add English fallback, dynamically fetched
-            let englishText = SupportedLanguage.english.startTranslationButtonText
-            return "\(localizedText) | \(englishText)"
+            return "\(sourceLanguage.startTranslationButtonText) | \(targetLanguage.startTranslationButtonText)"
         }
     }
 
     // Computed property for the navigation bar title
     private var navigationBarTitleText: String {
-        if sourceLanguage == .english {
+        if sourceLanguage == targetLanguage {
             return sourceLanguage.selectLanguageTitleText
         } else {
-            return "\(sourceLanguage.selectLanguageTitleText) | Select Language"
+            return "\(sourceLanguage.selectLanguageTitleText) | \(targetLanguage.selectLanguageTitleText)"
         }
     }
 
