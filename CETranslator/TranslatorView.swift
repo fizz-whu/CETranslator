@@ -2,6 +2,7 @@ import SwiftUI
 import Speech
 import Translation
 import AVFoundation
+import NaturalLanguage
 
 struct TranslatorView: View {
     // Parameters for the selected languages
@@ -17,6 +18,7 @@ struct TranslatorView: View {
     @State private var textToTranslate = ""
     @State private var translationSessionSourceToTarget: Translation.TranslationSession?
     @State private var translationSessionTargetToSource: Translation.TranslationSession?
+    @State private var languageDetector = NLLanguageRecognizer()
     @State private var synthesizer = AVSpeechSynthesizer()
     @State private var currentMode: TranslationDirection = .sourceToTarget // Default direction
     @State private var isMuted = false // Add this state variable for mute functionality
@@ -397,23 +399,23 @@ struct TranslatorView: View {
         .navigationBarTitleDisplayMode(.inline) // Consistent with ContentView
         .toolbarBackground(facebookCardBackground, for: .navigationBar) // Facebook-style nav bar
         .toolbarBackground(.visible, for: .navigationBar) // Ensure nav bar background is visible
-        // Translation Task for Source -> Target
+        // Apple Intelligence Translation Task for Source -> Target
         .translationTask(
             source: Locale.Language(identifier: sourceLocaleId), // Dynamic locale ID
             target: Locale.Language(identifier: targetLocaleId)  // Dynamic locale ID
         ) { session in
             if translationSessionSourceToTarget == nil {
-                print("🔑 TranslationSession (\(sourceLocaleId)->\(targetLocaleId)) obtained.")
+                print("🧠 Apple Intelligence TranslationSession (\(sourceLocaleId)->\(targetLocaleId)) obtained.")
                 translationSessionSourceToTarget = session
             }
         }
-        // Translation Task for Target -> Source
+        // Apple Intelligence Translation Task for Target -> Source
         .translationTask(
             source: Locale.Language(identifier: targetLocaleId), // Dynamic locale ID
             target: Locale.Language(identifier: sourceLocaleId)  // Dynamic locale ID
         ) { session in
             if translationSessionTargetToSource == nil {
-                print("🔑 TranslationSession (\(targetLocaleId)->\(sourceLocaleId)) obtained.")
+                print("🧠 Apple Intelligence TranslationSession (\(targetLocaleId)->\(sourceLocaleId)) obtained.")
                 translationSessionTargetToSource = session
             }
         }
@@ -433,70 +435,35 @@ struct TranslatorView: View {
     }
 
     private func determineTranslationDirection(for text: String) {
-        // Simple language detection based on character types
-        let hasChineseCharacters = text.range(of: "\\p{Script=Han}", options: .regularExpression) != nil
-        let hasJapaneseCharacters = text.range(of: "\\p{Script=Hiragana}|\\p{Script=Katakana}", options: .regularExpression) != nil
-        let hasKoreanCharacters = text.range(of: "\\p{Script=Hangul}", options: .regularExpression) != nil
-        let hasArabicCharacters = text.range(of: "\\p{Script=Arabic}", options: .regularExpression) != nil
-        let hasHindiCharacters = text.range(of: "\\p{Script=Devanagari}", options: .regularExpression) != nil
-        let hasCyrillicCharacters = text.range(of: "\\p{Script=Cyrillic}", options: .regularExpression) != nil
-        let hasThaiCharacters = text.range(of: "\\p{Script=Thai}", options: .regularExpression) != nil
+        // Enhanced language detection using Apple Intelligence NLLanguageRecognizer
+        languageDetector.reset()
+        languageDetector.processString(text)
         
-        // Determine if text matches source or target language
-        let textMatchesSource: Bool
-        let textMatchesTarget: Bool
+        let dominantLanguage = languageDetector.dominantLanguage
+        let sourceLanguageCode = NLLanguage(rawValue: sourceCode)
+        let targetLanguageCode = NLLanguage(rawValue: targetCode)
         
-        switch sourceLanguage {
-        case .chinese:
-            textMatchesSource = hasChineseCharacters
-        case .japanese:
-            textMatchesSource = hasJapaneseCharacters
-        case .korean:
-            textMatchesSource = hasKoreanCharacters
-        case .arabic:
-            textMatchesSource = hasArabicCharacters
-        case .hindi:
-            textMatchesSource = hasHindiCharacters
-        case .russian:
-            textMatchesSource = hasCyrillicCharacters
-        case .thai:
-            textMatchesSource = hasThaiCharacters
-        default:
-            // For Latin script languages (English, Spanish, German, etc.), assume Latin characters
-            textMatchesSource = !hasChineseCharacters && !hasJapaneseCharacters && !hasKoreanCharacters && !hasArabicCharacters && !hasHindiCharacters && !hasCyrillicCharacters && !hasThaiCharacters
-        }
+        print("🧠 Apple Intelligence detected language: \(dominantLanguage?.rawValue ?? "unknown")")
+        print("🔍 Source language: \(sourceLanguageCode.rawValue)")
+        print("🔍 Target language: \(targetLanguageCode.rawValue)")
         
-        switch targetLanguage {
-        case .chinese:
-            textMatchesTarget = hasChineseCharacters
-        case .japanese:
-            textMatchesTarget = hasJapaneseCharacters
-        case .korean:
-            textMatchesTarget = hasKoreanCharacters
-        case .arabic:
-            textMatchesTarget = hasArabicCharacters
-        case .hindi:
-            textMatchesTarget = hasHindiCharacters
-        case .russian:
-            textMatchesTarget = hasCyrillicCharacters
-        case .thai:
-            textMatchesTarget = hasThaiCharacters
-        default:
-            // For Latin script languages (English, Spanish, German, etc.), assume Latin characters
-            textMatchesTarget = !hasChineseCharacters && !hasJapaneseCharacters && !hasKoreanCharacters && !hasArabicCharacters && !hasHindiCharacters && !hasCyrillicCharacters && !hasThaiCharacters
-        }
-        
-        // Set translation direction based on detected language
-        if textMatchesSource && !textMatchesTarget {
-            currentMode = .sourceToTarget
-            print("🔍 Detected text matches source language (\(sourceName)) → translating to \(targetName)")
-        } else if textMatchesTarget && !textMatchesSource {
-            currentMode = .targetToSource
-            print("🔍 Detected text matches target language (\(targetName)) → translating to \(sourceName)")
+        // Set translation direction based on Apple Intelligence language detection
+        if let detectedLang = dominantLanguage {
+            if detectedLang == sourceLanguageCode {
+                currentMode = .sourceToTarget
+                print("🔍 Apple Intelligence detected source language (\(sourceName)) → translating to \(targetName)")
+            } else if detectedLang == targetLanguageCode {
+                currentMode = .targetToSource
+                print("🔍 Apple Intelligence detected target language (\(targetName)) → translating to \(sourceName)")
+            } else {
+                // Default to source → target if detected language doesn't match either
+                currentMode = .sourceToTarget
+                print("🔍 Apple Intelligence detected different language (\(detectedLang.rawValue)), defaulting to \(sourceName) → \(targetName)")
+            }
         } else {
-            // Default to source → target if detection is unclear
+            // Fallback to source → target if detection fails
             currentMode = .sourceToTarget
-            print("🔍 Language detection unclear, defaulting to \(sourceName) → \(targetName)")
+            print("🔍 Apple Intelligence detection unclear, defaulting to \(sourceName) → \(targetName)")
         }
     }
 
@@ -532,7 +499,7 @@ struct TranslatorView: View {
             return
         }
 
-        print("🚀 Translation task triggered for (\(sessionDesc)): '\(textToTranslate)'")
+        print("🚀 Apple Intelligence translation task triggered for (\(sessionDesc)): '\(textToTranslate)'")
 
         do {
             isTranslating = true
@@ -540,12 +507,12 @@ struct TranslatorView: View {
 
             let result = try await session.translate(textToTranslate)
             let outputText = result.targetText
-            print("📤 Output (\(outputLang)): \"\(outputText)\"")
+            print("📤 Apple Intelligence Output (\(outputLang)): \"\(outputText)\"") 
 
             await MainActor.run {
                 translatedText = outputText
                 isTranslating = false
-                print("💫 UI Updated with translation")
+                print("💫 UI Updated with Apple Intelligence translation")
             }
 
             // Speak the translated text using the dynamic output code
