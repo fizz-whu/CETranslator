@@ -2,7 +2,6 @@ import SwiftUI
 import Speech
 import Translation
 import AVFoundation
-import NaturalLanguage
 
 struct TranslatorView: View {
     // Parameters for the selected languages
@@ -18,7 +17,6 @@ struct TranslatorView: View {
     @State private var textToTranslate = ""
     @State private var translationSessionSourceToTarget: Translation.TranslationSession?
     @State private var translationSessionTargetToSource: Translation.TranslationSession?
-    @State private var languageDetector = NLLanguageRecognizer()
     @State private var synthesizer = AVSpeechSynthesizer()
     @State private var currentMode: TranslationDirection = .sourceToTarget // Default direction
     @State private var isMuted = false // Add this state variable for mute functionality
@@ -52,33 +50,28 @@ struct TranslatorView: View {
     // Computed property for the dynamic recognition placeholder text
     private var dynamicRecognitionPlaceholder: String {
         let activeLanguage = (currentMode == .sourceToTarget) ? sourceLanguage : targetLanguage
-        let activeLanguageName = (currentMode == .sourceToTarget) ? sourceName : targetName
         let fallbackLanguage = (currentMode == .sourceToTarget) ? targetLanguage : sourceLanguage
 
-        // Get the localized format string from the active language
-        let localizedFormat = activeLanguage.tapAndHoldButtonPlaceholderFormat
-        // Create the localized placeholder by inserting the language name
-        let localizedPlaceholder = String(format: localizedFormat, activeLanguageName)
+        // Get the localized instruction text from the active language
+        let localizedPlaceholder = activeLanguage.tapAndHoldButtonPlaceholderFormat
 
         if activeLanguage == fallbackLanguage {
             return localizedPlaceholder
         } else {
-            // For the fallback, get the fallback language format string
-            let fallbackFormat = fallbackLanguage.tapAndHoldButtonPlaceholderFormat
-            // Create the fallback version of the placeholder by inserting the *active* language name
-            let fallbackText = String(format: fallbackFormat, activeLanguageName)
+            // For the fallback, get the fallback language instruction text
+            let fallbackText = fallbackLanguage.tapAndHoldButtonPlaceholderFormat
             return "\(localizedPlaceholder) | \(fallbackText)"
         }
     }
 
     // Computed property for the left microphone button label
     private var leftMicrophoneButtonLabel: String {
-        return sourceLanguage.tapAndHoldToSpeakLabelFormat
+        sourceLanguage.tapAndHoldToSpeakLabelFormat
     }
 
     // Computed property for the right microphone button label
     private var rightMicrophoneButtonLabel: String {
-        return targetLanguage.tapAndHoldToSpeakLabelFormat
+        targetLanguage.tapAndHoldToSpeakLabelFormat
     }
 
     // Computed property for the dynamic translate button label
@@ -537,7 +530,7 @@ struct TranslatorView: View {
              try AVAudioSession.sharedInstance().setActive(true)
 
              let utterance = AVSpeechUtterance(string: text)
-             utterance.voice = AVSpeechSynthesisVoice(language: language) // Use dynamic code
+             utterance.voice = AVSpeechSynthesisVoice(language: language) ?? AVSpeechSynthesisVoice.speechVoices().first
              utterance.rate = AVSpeechUtteranceDefaultSpeechRate
              utterance.pitchMultiplier = 1.0
 
