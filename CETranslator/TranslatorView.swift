@@ -2,6 +2,7 @@ import SwiftUI
 import Speech
 import Translation
 import AVFoundation
+import NaturalLanguage
 
 struct TranslatorView: View {
     // Parameters for the selected languages
@@ -17,6 +18,7 @@ struct TranslatorView: View {
     @State private var textToTranslate = ""
     @State private var translationSessionSourceToTarget: Translation.TranslationSession?
     @State private var translationSessionTargetToSource: Translation.TranslationSession?
+    @State private var languageDetector = NLLanguageRecognizer()
     @State private var synthesizer = AVSpeechSynthesizer()
     @State private var currentMode: TranslationDirection = .sourceToTarget // Default direction
     @State private var isMuted = false // Add this state variable for mute functionality
