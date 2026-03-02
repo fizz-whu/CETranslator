@@ -57,7 +57,11 @@ final class SpeechTranslationViewModel: ObservableObject {
                 }
             }
         }
-        AVAudioSession.sharedInstance().requestRecordPermission { _ in }
+        if #available(iOS 17.0, *) {
+            AVAudioApplication.requestRecordPermission { _ in }
+        } else {
+            AVAudioSession.sharedInstance().requestRecordPermission { _ in }
+        }
     }
 
     private func getLocalizedErrorMessage(for errorType: String, language: String) -> String {
@@ -312,15 +316,17 @@ final class SpeechTranslationViewModel: ObservableObject {
                 }
             }
         case .denied, .restricted:
-            DispatchQueue.main.async {
-                 self.errorMessage = NSLocalizedString("speech_permission_denied_or_restricted_check_settings", 
-                     comment: "Voice recognition is disabled. Please enable it in your device Settings")
-             }
+            let errorMsg = NSLocalizedString("speech_permission_denied_or_restricted_check_settings", 
+                comment: "Voice recognition is disabled. Please enable it in your device Settings")
+            Task { @MainActor in
+                self.errorMessage = errorMsg
+            }
             return false
         @unknown default:
-            DispatchQueue.main.async {
-                self.errorMessage = NSLocalizedString("unknown_speech_permission_status", 
-                    comment: "Unable to determine voice recognition permissions. Please check your device Settings")
+            let errorMsg = NSLocalizedString("unknown_speech_permission_status", 
+                comment: "Unable to determine voice recognition permissions. Please check your device Settings")
+            Task { @MainActor in
+                self.errorMessage = errorMsg
             }
             return false
         }
