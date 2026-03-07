@@ -24,6 +24,7 @@ final class SpeechTranslationViewModel: ObservableObject {
     private var speechRecognizerRU: SFSpeechRecognizer? // Added RU recognizer
     private var speechRecognizerTH: SFSpeechRecognizer? // Added TH recognizer
     private var speechRecognizerVI: SFSpeechRecognizer? // Added VI recognizer
+    private var speechRecognizerUK: SFSpeechRecognizer? // Added UK recognizer
 
     @Published var recognizedText: String = ""
     @Published var isRecording: Bool = false
@@ -45,6 +46,7 @@ final class SpeechTranslationViewModel: ObservableObject {
         speechRecognizerRU = SFSpeechRecognizer(locale: Locale(identifier: "ru-RU"))   // Initialize RU recognizer
         speechRecognizerTH = SFSpeechRecognizer(locale: Locale(identifier: "th-TH"))   // Initialize TH recognizer
         speechRecognizerVI = SFSpeechRecognizer(locale: Locale(identifier: "vi-VN"))   // Initialize VI recognizer
+        speechRecognizerUK = SFSpeechRecognizer(locale: Locale(identifier: "uk-UA"))   // Initialize UK recognizer
         requestSpeechPermissions()
     }
 
@@ -94,6 +96,8 @@ final class SpeechTranslationViewModel: ObservableObject {
                 return "ไม่พบเสียงพูด\nกดค้างไมโครโฟนและพูดให้ชัดเจน 🎤"
             case "vi-VN":
                 return "Không phát hiện giọng nói\nNhấn giữ micrô và nói rõ ràng 🎤"
+            case "uk-UA":
+                return "Мову не виявлено\nУтримуйте мікрофон і говоріть чітко 🎤"
             default:
                 return "No speech detected\nPress & hold microphone and speak clearly 🎤"
             }
@@ -125,6 +129,8 @@ final class SpeechTranslationViewModel: ObservableObject {
                 return "ข้อผิดพลาดในการรู้จำเสียง\nกดค้างไมโครโฟนและพูดให้ชัดเจนกว่านี้ 🎤"
             case "vi-VN":
                 return "Lỗi nhận dạng giọng nói\nNhấn giữ micrô và nói rõ ràng hơn 🎤"
+            case "uk-UA":
+                return "Помилка розпізнавання мови\nУтримуйте мікрофон і говоріть чіткіше 🎤"
             default:
                 return "Speech recognition error\nPress & hold microphone and speak more clearly 🎤"
             }
@@ -169,6 +175,8 @@ final class SpeechTranslationViewModel: ObservableObject {
             recognizer = speechRecognizerTH
         case "vi-VN": // Add case for Vietnamese
             recognizer = speechRecognizerVI
+        case "uk-UA": // Add case for Ukrainian
+            recognizer = speechRecognizerUK
         default:
             print("🔴 Unsupported language code: \(sourceLanguage)")
             recognizer = nil

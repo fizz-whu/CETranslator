@@ -16,6 +16,7 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
     case russian = "Русский"
     case thai = "ไทย"
     case vietnamese = "Tiếng Việt"
+    case ukrainian = "Українська"
 
     var id: String { self.rawValue }
 
@@ -36,6 +37,7 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .russian: return "🇷🇺"
         case .thai: return "🇹🇭"
         case .vietnamese: return "🇻🇳"
+        case .ukrainian: return "🇺🇦"
         }
     }
 
@@ -56,6 +58,7 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .russian: return "ru-RU"
         case .thai: return "th-TH"
         case .vietnamese: return "vi-VN"
+        case .ukrainian: return "uk-UA"
         }
     }
 
@@ -76,6 +79,7 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .russian: return "ru"
         case .thai: return "th"
         case .vietnamese: return "vi"
+        case .ukrainian: return "uk"
         }
     }
 
@@ -96,6 +100,7 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .russian: return "Начать перевод"
         case .thai: return "เริ่มแปล"
         case .vietnamese: return "Bắt đầu dịch"
+        case .ukrainian: return "Почати переклад"
         }
     }
 
@@ -116,6 +121,7 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .russian: return "Выбрать язык"
         case .thai: return "เลือกภาษา"
         case .vietnamese: return "Chọn ngôn ngữ"
+        case .ukrainian: return "Вибрати мову"
         }
     }
 
@@ -136,6 +142,7 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .russian: return "Перевод появится здесь"
         case .thai: return "การแปลจะปรากฏที่นี่"
         case .vietnamese: return "Bản dịch sẽ xuất hiện ở đây"
+        case .ukrainian: return "Переклад з'явиться тут"
         }
     }
 
@@ -157,6 +164,7 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .russian: return "Удерживайте микрофон для речи 🎤"
         case .thai: return "กดค้างไมโครโฟนเพื่อพูด 🎤"
         case .vietnamese: return "Nhấn giữ micrô để nói 🎤"
+        case .ukrainian: return "Утримуйте мікрофон щоб говорити 🎤"
         }
     }
 
@@ -178,6 +186,7 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .russian: return "Удерживайте для речи"
         case .thai: return "กดค้างเพื่อพูด"
         case .vietnamese: return "Nhấn giữ để nói"
+        case .ukrainian: return "Утримуйте щоб говорити"
         }
     }
 
@@ -211,8 +220,9 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
         case .thai:
             return "แปล" // Keep as is (already short)
         case .vietnamese:
-            return "Đi" // Short version for Vietnamese
-        // Add cases for all your supported languages
+            return "Đi"
+        case .ukrainian:
+            return "Іди"
         }
     }
     
@@ -247,6 +257,8 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Hashable {
             return "ตัวเลือกการพิมพ์ก็มีให้ใช้งานด้วย"
         case .vietnamese:
             return "Tùy chọn gõ phím cũng có sẵn"
+        case .ukrainian:
+            return "Опція введення тексту також доступна"
         }
     }
 }
